@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- مكتبة المصطفى[span_1](start_span)[span_1](end_span) -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +9,7 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
         
-        /* أبعاد الكرت الصارمة 8.5 في 5.5 سم */
+        /* أبعاد الكرت الصارمة 8.5 في 5.5 سم للطباعة */
         .card-print-size {
             width: 8.5cm; height: 5.5cm; min-width: 8.5cm; max-width: 8.5cm; min-height: 5.5cm; max-height: 5.5cm;
             box-sizing: border-box; background: #fff; border: 2px solid #059669; border-radius: 6mm;
@@ -25,7 +24,7 @@
             .no-print { display: none !important; }
         }
         
-        /* تجميل سكرول القوائم */
+        /* تجميل شريط التمرير */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
@@ -36,8 +35,8 @@
     <div class="w-full lg:w-72 bg-emerald-950 text-white p-5 flex flex-col justify-between border-b lg:border-l border-emerald-800 no-print">
         <div class="flex flex-col gap-5">
             <div class="text-center pb-4 border-b border-emerald-800">
-                <h1 class="text-2xl font-black text-emerald-400">نظام البطاقة التموينية</h1>
-                <p class="text-xs text-emerald-200 mt-1">V2.0 - متوافق مع جميع الأجهزة</p>
+                <h1 class="text-2xl font-black text-emerald-400">مكتبة المصطفى</h1>
+                <p class="text-xs text-emerald-200 mt-1">نظام البطاقة التموينية الذكي</p>
             </div>
             
             <nav class="flex flex-col gap-3">
@@ -49,8 +48,7 @@
             </nav>
         </div>
         <div class="text-center pt-4 border-t border-emerald-800/50 text-[11px] text-emerald-400 font-bold mt-6 lg:mt-0">
-            <!-- برمجة مكتبة المصطفى[span_2](start_span)[span_2](end_span) -->
-            © 2026 جميع الحقوق محفوظة
+            برمجة وتطوير: مكتبة المصطفى © 2026
         </div>
     </div>
 
@@ -90,8 +88,8 @@
                 <label class="block text-sm font-bold text-slate-700 mb-2">📸 مسح استمارة جديدة:</label>
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="file" id="image_input" accept="image/*" class="hidden" onchange="handleImageSelected()">
-                    <button onclick="document.getElementById('image_input').click()" class="flex-1 bg-slate-100 border border-slate-300 text-slate-800 font-bold py-2.5 rounded-lg text-sm">📁 اختر صورة</button>
-                    <button id="ocr_btn" onclick="startOCR()" class="flex-1 bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm shadow">⚡ قراءة تلقائية</button>
+                    <button onclick="document.getElementById('image_input').click()" class="flex-1 bg-slate-100 border border-slate-300 text-slate-800 font-bold py-2.5 rounded-lg text-sm transition-all hover:bg-slate-200">📁 اختر صورة</button>
+                    <button id="ocr_btn" onclick="startOCR()" class="flex-1 bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm shadow transition-all hover:bg-emerald-800">⚡ قراءة تلقائية</button>
                 </div>
                 <!-- معاينة الصورة 300px -->
                 <div id="image_preview_container" class="hidden flex flex-col items-center mt-3 bg-slate-50 p-2 rounded-lg border">
@@ -202,8 +200,9 @@
                     </div>
 
                     <!-- الفوتر -->
-                    <div class="text-center text-[5pt] text-emerald-800 font-bold border-t border-emerald-100 pt-0.5 mt-0.5 tracking-wide">
-                        البطاقة معتمدة رسمياً للتجهيز
+                    <div class="text-center text-[5pt] text-emerald-800 font-bold border-t border-emerald-100 pt-0.5 mt-0.5 tracking-wide flex justify-between px-2">
+                        <span>تصميم: مكتبة المصطفى</span>
+                        <span>البطاقة معتمدة رسمياً للتجهيز</span>
                     </div>
                 </div>
             </div>
@@ -211,7 +210,7 @@
         </div>
     </div>
 
-    <!-- أكواد الجافاسكريبت الكاملة -->
+    <!-- أكواد الجافاسكريبت المحدثة كلياً لتجاوز خطأ الموديل -->
     <script>
         // تحميل البيانات المحفوظة
         window.onload = () => {
@@ -238,9 +237,10 @@
             const key = document.getElementById('gemini_key').value.trim();
             if (!key) return alert("أدخل المفتاح!");
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${key}`);
+                // التعديل هنا للتحقق من الموديل الجديد
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
                 const data = await res.json();
-                if (data.models) alert("✅ المفتاح يعمل بنجاح!");
+                if (data.models) alert("✅ المفتاح يعمل بنجاح والاتصال بخوادم جوجل جاهز!");
                 else throw new Error(data.error?.message);
             } catch (e) { alert("❌ خطأ: " + e.message); }
         }
@@ -263,7 +263,7 @@
             try {
                 const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                     method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ chat_id: id, text: "🔔 تم الفحص بنجاح!" })
+                    body: JSON.stringify({ chat_id: id, text: "🔔 تم الفحص بنجاح من مكتبة المصطفى!" })
                 });
                 const data = await res.json();
                 if (data.ok) alert("✅ تم إرسال رسالة فحص لهاتفك!");
@@ -298,13 +298,15 @@
             if (!apiKey || !file) return alert('يرجى وضع مفتاح Gemini واختيار صورة!');
             
             localStorage.setItem('gemini_key', apiKey);
-            btn.innerText = "جاري القراءة... ⏳"; btn.disabled = true;
+            btn.innerText = "جاري المعالجة... ⏳"; btn.disabled = true;
 
             try {
                 const imageObj = await fileToBase64(file);
                 const prompt = `استخرج بيانات البطاقة التموينية بدقة بصيغة JSON فقط: {"card_number":"","family_head":"","food_agent_name":"","food_agent_id":"","flour_agent_name":"","flour_agent_id":"","center_name_id":"","branch":"","governorate":"","family_members":[{"name":"","relationship":""}]}`;
                 
-                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                // --- التعديل الجذري لحل مشكلة الموديل هنا ---
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                
                 const res = await fetch(url, {
                     method: "POST", headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ contents: [{ parts: [{text: prompt}, {inlineData: imageObj}] }] })
@@ -316,7 +318,7 @@
                 let text = resData.candidates[0].content.parts[0].text.trim();
                 text = text.replace(/```json|```/g, '').trim();
                 fillFormFields(JSON.parse(text));
-            } catch (err) { alert("حدث خطأ: " + err.message); }
+            } catch (err) { alert("حدث خطأ أثناء معالجة الصورة:\n" + err.message); }
             finally { btn.innerText = "⚡ قراءة تلقائية"; btn.disabled = false; }
         }
 
@@ -379,7 +381,7 @@
                     tbody.innerHTML += `<tr class="${i%2===0?'bg-slate-50':''} border-b-[0.1mm] border-slate-100"><td class="p-0.5 px-1">${name}</td><td class="p-0.5 text-center text-slate-500">${rel}</td></tr>`;
                 }
             });
-            if (!has) tbody.innerHTML = `<tr><td colspan="2" class="text-center p-2 text-slate-400">لا يوجد أفراد</td></tr>`;
+            if (!has) tbody.innerHTML = `<tr><td colspan="2" class="text-center p-2 text-slate-400">لا يوجد أفراد مضافين</td></tr>`;
         }
 
         function triggerPrint() { window.print(); }
@@ -390,8 +392,8 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = ev => {
-                try { fillFormFields(JSON.parse(ev.target.result)); alert("✅ تم استعادة البيانات!"); }
-                catch { alert("❌ خطأ: ملف غير صالح."); }
+                try { fillFormFields(JSON.parse(ev.target.result)); alert("✅ تم استعادة البيانات بنجاح!"); }
+                catch { alert("❌ خطأ: ملف غير صالح أو تالف."); }
             };
             reader.readAsText(file);
         }
@@ -400,7 +402,7 @@
             const token = document.getElementById('tg_token').value.trim();
             const chatId = document.getElementById('tg_id').value.trim();
             const btn = document.getElementById('tg_btn');
-            if (!token || !chatId) return alert("يرجى ملء بيانات البوت والقناة أولاً.");
+            if (!token || !chatId) return alert("يرجى ملء بيانات البوت والقناة أولاً من الإعدادات.");
 
             btn.innerText = "جاري الإرسال... ⏳"; btn.disabled = true;
             
@@ -420,7 +422,7 @@
                 })).filter(m => m.name)
             };
 
-            const txt = `🔔 بطاقة جديدة\n• الرقم: ${data.card_number}\n• رب الأسرة: ${data.family_head}`;
+            const txt = `🔔 بطاقة جديدة من مكتبة المصطفى\n• الرقم: ${data.card_number}\n• رب الأسرة: ${data.family_head}`;
             try {
                 await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                     method: "POST", headers: { "Content-Type": "application/json" },
@@ -434,10 +436,11 @@
                 fd.append('caption', `نسخة احتياطية للرقم ${data.card_number}`);
                 
                 const res = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, { method: "POST", body: fd });
-                if ((await res.json()).ok) alert("✅ تم الإرسال للتلغرام بنجاح!");
+                if ((await res.json()).ok) alert("✅ تم الإرسال والرفع للتلغرام بنجاح تام!");
             } catch (err) { alert("خطأ الإرسال: " + err.message); }
             finally { btn.innerText = "✈️ إرسال للتلغرام + نسخة احتياطية"; btn.disabled = false; }
         }
     </script>
 </body>
 </html>
+
