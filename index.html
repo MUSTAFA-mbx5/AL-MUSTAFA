@@ -1,425 +1,284 @@
 <!DOCTYPE html>
+<!-- مكتبة المصطفى[span_1](start_span)[span_1](end_span) -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة مكتبة المصطفى - إدارة وطباعة البطاقة التموينية</title>
-    <!-- خط Cairo وتصميم Tailwind CSS المطور -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <title>بوابة المكتبة - البطاقة التموينية الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f8fafc;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
         
-        /* ضبط حجم الكرت الفعلي بدقة متناهية للطباعة (8.5سم عرض × 5.5سم ارتفاع) */
+        /* أبعاد الكرت الصارمة 8.5 في 5.5 سم */
         .card-print-size {
-            width: 8.5cm;
-            height: 5.5cm;
-            min-width: 8.5cm;
-            max-width: 8.5cm;
-            min-height: 5.5cm;
-            max-height: 5.5cm;
-            box-sizing: border-box;
-            background: #ffffff;
-            border: 1.5px solid #16a34a;
-            border-radius: 5mm;
-            padding: 2mm 3mm;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            width: 8.5cm; height: 5.5cm; min-width: 8.5cm; max-width: 8.5cm; min-height: 5.5cm; max-height: 5.5cm;
+            box-sizing: border-box; background: #fff; border: 2px solid #059669; border-radius: 6mm;
+            padding: 2.5mm; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        /* تنسيقات الطباعة الصارمة لعدم إظهار الأزرار واللوحات الجانبية */
+        /* إخفاء كل شيء في الطباعة عدا الكرت */
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            .print-area, .print-area * {
-                visibility: visible;
-            }
-            .print-area {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                margin: 0;
-                padding: 0;
-                border: none !important;
-                box-shadow: none !important;
-            }
-            .no-print {
-                display: none !important;
-            }
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; padding: 0; border: none; }
+            .no-print { display: none !important; }
         }
+        
+        /* تجميل سكرول القوائم */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col lg:flex-row">
 
-    <!-- ================= شريط الأزرار الجانبي/العلوي الأنيق (Sidebar) ================= -->
-    <div class="w-full lg:w-72 bg-emerald-950 text-white p-5 lg:p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-l border-emerald-800 no-print">
-        <div class="flex flex-col gap-6">
+    <!-- القائمة الجانبية (شريط التحكم) -->
+    <div class="w-full lg:w-72 bg-emerald-950 text-white p-5 flex flex-col justify-between border-b lg:border-l border-emerald-800 no-print">
+        <div class="flex flex-col gap-5">
             <div class="text-center pb-4 border-b border-emerald-800">
-                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-3 py-1 rounded-full">تحديث مستقر 2026</span>
-                <h1 class="text-xl font-black text-emerald-400 mt-2">مكتبة المصطفى</h1>
-                <p class="text-xs text-emerald-200 mt-1">نظام البطاقة التموينية الذكي</p>
+                <h1 class="text-2xl font-black text-emerald-400">نظام البطاقة التموينية</h1>
+                <p class="text-xs text-emerald-200 mt-1">V2.0 - متوافق مع جميع الأجهزة</p>
             </div>
-
-            <!-- أزرار العمليات الكبرى السريعة -->
+            
             <nav class="flex flex-col gap-3">
-                <button onclick="triggerPrint()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm">
-                    🖨️ طباعة الكرت الآن
-                </button>
-                
-                <button onclick="triggerPreview()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2 text-xs">
-                    👁️ معاينة وتنسيق الكرت
-                </button>
-
-                <div class="h-[1px] bg-emerald-800/50 my-1"></div>
-
-                <button id="tg_btn" onclick="sendToTelegram()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-4 rounded-xl shadow transition-all flex items-center justify-center gap-2 text-sm">
-                    ✈️ إرسال للتلغرام + احتياطي
-                </button>
-
-                <button onclick="triggerRestore()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-4 rounded-xl shadow transition-all flex items-center justify-center gap-2 text-xs">
-                    📥 استعادة نسخة احتياطية
-                </button>
+                <button onclick="triggerPrint()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow transition-all">🖨️ طباعة الكرت الآن</button>
+                <div class="h-px bg-emerald-800/50 my-1"></div>
+                <button id="tg_btn" onclick="sendToTelegram()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow transition-all text-sm">✈️ إرسال للتلغرام + نسخة احتياطية</button>
+                <button onclick="triggerRestore()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-2.5 px-4 rounded-xl shadow transition-all text-sm">📥 استعادة نسخة (JSON)</button>
                 <input type="file" id="restore_file_input" accept=".json" class="hidden" onchange="handleRestore(event)">
             </nav>
         </div>
-
-        <!-- حقوق التطوير الأنيقة لمكتبتك -->
-        <div class="text-center pt-4 border-t border-emerald-800/50 text-[10px] text-emerald-400 font-semibold mt-6 lg:mt-0">
-            تصميم وبرمجة: مكتبة المصطفى © 2026[span_1](start_span)[span_1](end_span)
+        <div class="text-center pt-4 border-t border-emerald-800/50 text-[11px] text-emerald-400 font-bold mt-6 lg:mt-0">
+            <!-- برمجة مكتبة المصطفى[span_2](start_span)[span_2](end_span) -->
+            © 2026 جميع الحقوق محفوظة
         </div>
     </div>
 
-    <!-- ================= مساحة العمل الرئيسية ================= -->
-    <div class="flex-1 p-4 lg:p-8 flex flex-col xl:flex-row gap-6 lg:gap-8 overflow-y-auto">
+    <!-- مساحة العمل والبيانات -->
+    <div class="flex-1 p-3 lg:p-6 flex flex-col xl:flex-row gap-6 overflow-y-auto">
         
-        <!-- القسم الأيمن: لوحة التحكم وجدول المدخلات -->
-        <div class="flex-1 bg-white rounded-2xl p-4 lg:p-6 shadow-sm border border-slate-200 no-print flex flex-col gap-6">
+        <!-- لوحة التحكم والمدخلات (يمين) -->
+        <div class="flex-1 bg-white rounded-2xl p-4 lg:p-6 shadow-sm border border-slate-200 no-print flex flex-col gap-5">
             
-            <!-- لوحة إعدادات المفاتيح وفحصها الفوري -->
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col gap-4">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-sm font-black text-slate-700">⚙️ إعدادات الربط والتحقق الفوري</h3>
-                    <button onclick="toggleKeys()" class="text-xs text-emerald-700 font-bold hover:underline">إظهار/إخفاء الرموز 👁️</button>
+            <!-- إعدادات الربط -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="flex justify-between items-center border-b pb-2 mb-3">
+                    <h3 class="text-sm font-black text-slate-700">⚙️ إعدادات الربط والمفاتيح</h3>
+                    <button onclick="toggleKeys()" class="text-xs text-emerald-700 font-bold">إظهار/إخفاء 👁️</button>
                 </div>
-                
-                <!-- حقل Gemini API -->
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-slate-600">مفتاح Gemini API:</label>
+                <div class="flex flex-col gap-3">
                     <div class="flex gap-1.5">
-                        <input type="password" id="gemini_key" class="flex-1 text-right p-2 border border-slate-300 rounded-lg text-xs" placeholder="AIzaSy...">
-                        <button onclick="saveSingleKey('gemini_key')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-bold">💾 حفظ</button>
-                        <button onclick="testGemini()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-bold">⚡ فحص</button>
+                        <input type="password" id="gemini_key" class="flex-1 p-2 border rounded-lg text-xs" placeholder="مفتاح Gemini API">
+                        <button onclick="saveKey('gemini_key')" class="bg-emerald-600 text-white text-xs px-2 py-1 rounded-lg font-bold">حفظ</button>
+                        <button onclick="testGemini()" class="bg-slate-800 text-white text-xs px-2 py-1 rounded-lg font-bold">فحص</button>
                     </div>
-                </div>
-
-                <!-- حقل Telegram Token -->
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-slate-600">توكن بوت التلغرام:</label>
                     <div class="flex gap-1.5">
-                        <input type="password" id="tg_token" class="flex-1 text-right p-2 border border-slate-300 rounded-lg text-xs" placeholder="123456:ABC...">
-                        <button onclick="saveSingleKey('tg_token')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-bold">💾 حفظ</button>
-                        <button onclick="testTgToken()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-bold">⚡ فحص</button>
+                        <input type="password" id="tg_token" class="flex-1 p-2 border rounded-lg text-xs" placeholder="توكن بوت التلغرام">
+                        <button onclick="saveKey('tg_token')" class="bg-emerald-600 text-white text-xs px-2 py-1 rounded-lg font-bold">حفظ</button>
+                        <button onclick="testTgToken()" class="bg-slate-800 text-white text-xs px-2 py-1 rounded-lg font-bold">فحص</button>
                     </div>
-                </div>
-
-                <!-- حقل Telegram Chat ID -->
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-slate-600">معرف المستلم / القناة (Chat ID):</label>
                     <div class="flex gap-1.5">
-                        <input type="password" id="tg_id" class="flex-1 text-right p-2 border border-slate-300 rounded-lg text-xs" placeholder="-100...">
-                        <button onclick="saveSingleKey('tg_id')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-bold">💾 حفظ</button>
-                        <button onclick="testTgId()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-bold">⚡ فحص</button>
+                        <input type="password" id="tg_id" class="flex-1 p-2 border rounded-lg text-xs" placeholder="معرف القناة / Chat ID">
+                        <button onclick="saveKey('tg_id')" class="bg-emerald-600 text-white text-xs px-2 py-1 rounded-lg font-bold">حفظ</button>
+                        <button onclick="testTgId()" class="bg-slate-800 text-white text-xs px-2 py-1 rounded-lg font-bold">فحص</button>
                     </div>
                 </div>
             </div>
 
-            <!-- قسم تحميل الصورة وقراءتها مع المعاينة 300px -->
+            <!-- رفع الصورة وقراءتها -->
             <div class="border-t pt-4">
-                <label class="block text-sm font-bold text-slate-700 mb-2">📸 مسح وقراءة استمارة جديدة:</label>
+                <label class="block text-sm font-bold text-slate-700 mb-2">📸 مسح استمارة جديدة:</label>
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="file" id="image_input" accept="image/*" class="hidden" onchange="handleImageSelected()">
-                    <button onclick="document.getElementById('image_input').click()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-lg text-xs border border-slate-300 transition-all">
-                        📁 اختر صورة الاستمارة
-                    </button>
-                    <button id="ocr_btn" onclick="startOCR()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 px-4 rounded-lg text-xs shadow transition-all">
-                        ⚡ قراءة تلقائية بـ Gemini
-                    </button>
+                    <button onclick="document.getElementById('image_input').click()" class="flex-1 bg-slate-100 border border-slate-300 text-slate-800 font-bold py-2.5 rounded-lg text-sm">📁 اختر صورة</button>
+                    <button id="ocr_btn" onclick="startOCR()" class="flex-1 bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-sm shadow">⚡ قراءة تلقائية</button>
                 </div>
-                
-                <!-- حاوية المعاينة المخصصة للصورة بعرض 300px -->
-                <div id="image_preview_container" class="hidden flex flex-col items-center mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                    <span class="text-[10px] font-bold text-slate-500 mb-2">معاينة الصورة المرفوعة (300px):</span>
-                    <img id="uploaded_image_preview" class="w-[300px] h-auto object-contain rounded-lg border border-slate-300 shadow-sm bg-white" src="" alt="استمارة البطاقة التموينية">
+                <!-- معاينة الصورة 300px -->
+                <div id="image_preview_container" class="hidden flex flex-col items-center mt-3 bg-slate-50 p-2 rounded-lg border">
+                    <span class="text-[10px] font-bold text-slate-500 mb-1">المعاينة (300px)</span>
+                    <img id="uploaded_image_preview" class="w-[300px] h-auto object-contain rounded border bg-white" src="" alt="preview">
                 </div>
             </div>
 
-            <!-- حقول تحرير البيانات اليدوية السريعة -->
+            <!-- تحرير البيانات -->
             <div class="flex flex-col gap-3 border-t pt-4">
-                <h3 class="text-xs font-bold text-slate-700 border-b pb-1">✏️ تحرير حقول الكرت يدوياً (معاينة حية):</h3>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">رقم البطاقة التموينية:</label>
-                        <input type="text" id="input_card_number" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">اسم رب الأسرة:</label>
-                        <input type="text" id="input_family_head" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
+                <h3 class="text-xs font-bold text-slate-700 mb-1">✏️ تحرير الحقول يدوياً:</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="input_card_number" oninput="updateCard()" placeholder="رقم البطاقة" class="p-2 border rounded-lg text-xs text-center font-bold">
+                    <input type="text" id="input_family_head" oninput="updateCard()" placeholder="اسم رب الأسرة" class="p-2 border rounded-lg text-xs text-center font-bold">
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">اسم وكيل الغذائية:</label>
-                        <input type="text" id="input_food_name" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">رقم وكيل الغذائية:</label>
-                        <input type="text" id="input_food_id" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="input_food_name" oninput="updateCard()" placeholder="اسم وكيل الغذائية" class="p-2 border rounded-lg text-xs text-center">
+                    <input type="text" id="input_food_id" oninput="updateCard()" placeholder="رقم وكيل الغذائية" class="p-2 border rounded-lg text-xs text-center">
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">اسم وكيل الطحين:</label>
-                        <input type="text" id="input_flour_name" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">رقم وكيل الطحين:</label>
-                        <input type="text" id="input_flour_id" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="input_flour_name" oninput="updateCard()" placeholder="اسم وكيل الطحين" class="p-2 border rounded-lg text-xs text-center">
+                    <input type="text" id="input_flour_id" oninput="updateCard()" placeholder="رقم وكيل الطحين" class="p-2 border rounded-lg text-xs text-center">
                 </div>
-
                 <div class="grid grid-cols-3 gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">المحافظة:</label>
-                        <input type="text" id="input_governorate" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">الفرع:</label>
-                        <input type="text" id="input_branch" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">اسم ورقم المركز:</label>
-                        <input type="text" id="input_center" oninput="updateCard()" class="w-full p-2 border rounded-lg text-xs">
-                    </div>
+                    <input type="text" id="input_governorate" oninput="updateCard()" placeholder="المحافظة" class="p-2 border rounded-lg text-xs text-center">
+                    <input type="text" id="input_branch" oninput="updateCard()" placeholder="الفرع" class="p-2 border rounded-lg text-xs text-center">
+                    <input type="text" id="input_center" oninput="updateCard()" placeholder="اسم المركز" class="p-2 border rounded-lg text-xs text-center">
                 </div>
 
-                <!-- أفراد العائلة المضافين -->
-                <div class="mt-2 border-t pt-2">
+                <!-- أفراد العائلة -->
+                <div class="mt-2 border-t pt-3">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-bold text-slate-700">👥 أفراد العائلة المسجلين:</span>
-                        <button onclick="addMemberRow('', '')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1 rounded">إضافة فرد +</button>
+                        <button onclick="addMemberRow('', '')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-1 rounded">إضافة فرد +</button>
                     </div>
-                    <div id="members_inputs_container" class="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
-                        <!-- تضاف ديناميكياً عبر الجافاسكريبت -->
-                    </div>
+                    <div id="members_inputs_container" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1"></div>
                 </div>
             </div>
         </div>
 
-        <!-- القسم الأيسر: المعاينة الحية للكرت بمقياس 8.5 × 5.5 سم -->
+        <!-- المعاينة الحية للكرت (يسار) -->
         <div class="w-full xl:w-[400px] flex flex-col items-center gap-4">
-            <h3 class="text-sm font-bold text-slate-600 no-print">🔍 معاينة الكرت المباشرة (8.5cm x 5.5cm):</h3>
+            <h3 class="text-sm font-bold text-slate-600 no-print">🔍 الكرت المباشر (8.5cm x 5.5cm):</h3>
             
-            <!-- حاوية الكرت والطباعة -->
-            <div class="print-area bg-white p-4 rounded-3xl border border-slate-200 shadow-xl no-print">
+            <div class="print-area bg-white p-3 rounded-3xl border border-slate-200 shadow-xl no-print flex justify-center">
                 <div id="target_card" class="card-print-size">
                     
-                    <!-- ترويسة الكرت الرسمية -->
+                    <!-- الهيدر -->
                     <div class="flex justify-between items-center border-b-[0.5mm] border-emerald-700 pb-1">
                         <img src="logo1.png" alt="logo" class="h-6 w-6 object-contain" onerror="this.style.display='none'">
-                        <div class="text-center">
-                            <h1 class="text-[7.5pt] font-black text-emerald-800 leading-tight">البطاقة التموينية الإلكترونية</h1>
-                            <p class="text-[5.5pt] font-bold text-emerald-600 leading-tight">وزارة التجارة العراقية</p>
+                        <div class="text-center w-full">
+                            <h1 class="text-[8pt] font-black text-emerald-800 leading-tight">البطاقة التموينية الإلكترونية</h1>
+                            <p class="text-[6pt] font-bold text-emerald-600 leading-tight">جمهورية العراق - وزارة التجارة</p>
                         </div>
                         <img src="logo2.png" alt="logo" class="h-6 w-6 object-contain" onerror="this.style.display='none'">
                     </div>
 
-                    <!-- شبكة بيانات الكرت -->
-                    <div class="grid grid-cols-2 gap-1 text-[6.5pt] mt-1">
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight">
+                    <!-- البيانات الأساسية -->
+                    <div class="grid grid-cols-2 gap-1 text-[7pt] mt-1">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight">
                             <span class="block text-[5pt] font-bold text-emerald-800">رقم البطاقة التموينية</span>
-                            <div id="card_number_val" class="font-extrabold text-slate-800">---</div>
+                            <div id="card_number_val" class="font-extrabold text-slate-900 tracking-wider">---</div>
                         </div>
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight">
                             <span class="block text-[5pt] font-bold text-emerald-800">اسم رب الأسرة</span>
-                            <div id="family_head_val" class="font-extrabold text-slate-800 truncate">---</div>
+                            <div id="family_head_val" class="font-extrabold text-slate-900 truncate">---</div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-1 text-[6pt] mt-0.5">
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight">
-                            <span class="block text-[5pt] font-bold text-emerald-800">اسم ورقم وكيل الطحين</span>
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight">
+                            <span class="block text-[5pt] font-bold text-emerald-800">الوكيل / الطحين</span>
                             <div id="flour_agent_val" class="font-bold text-slate-700 truncate">---</div>
                         </div>
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight">
-                            <span class="block text-[5pt] font-bold text-emerald-800">اسم ورقم وكيل الغذائية</span>
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight">
+                            <span class="block text-[5pt] font-bold text-emerald-800">الوكيل / الغذائية</span>
                             <div id="food_agent_val" class="font-bold text-slate-700 truncate">---</div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-0.5 text-[5.5pt] mt-0.5">
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight text-center">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight text-center">
                             <span class="block text-[4.5pt] font-bold text-emerald-800">المركز التمويني</span>
                             <div id="center_val" class="font-semibold text-slate-700 truncate">---</div>
                         </div>
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight text-center">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight text-center">
                             <span class="block text-[4.5pt] font-bold text-emerald-800">الفرع</span>
                             <div id="branch_val" class="font-semibold text-slate-700 truncate">---</div>
                         </div>
-                        <div class="bg-slate-50 border border-slate-200 rounded p-1 leading-tight text-center">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1 py-0.5 leading-tight text-center">
                             <span class="block text-[4.5pt] font-bold text-emerald-800">المحافظة</span>
                             <div id="governorate_val" class="font-semibold text-slate-700 truncate">---</div>
                         </div>
                     </div>
 
-                    <!-- جدول أفراد العائلة المسجلين -->
-                    <div class="border border-slate-200 rounded overflow-hidden mt-1 flex-1 flex flex-col justify-between">
+                    <!-- جدول الأفراد -->
+                    <div class="border border-slate-200 rounded overflow-hidden mt-1 flex-1 flex flex-col">
                         <table class="w-full text-right border-collapse">
                             <thead>
                                 <tr class="bg-emerald-50 border-b-[0.3mm] border-emerald-200 text-emerald-800 font-bold text-[5.5pt]">
-                                    <th class="p-0.5 w-3/5">الأفراد المسجلين</th>
-                                    <th class="p-0.5 w-2/5">الصلة</th>
+                                    <th class="p-0.5 px-1 w-2/3">الأفراد المسجلين</th>
+                                    <th class="p-0.5 px-1 w-1/3 text-center">الصلة</th>
                                 </tr>
                             </thead>
                             <tbody id="family_table_body" class="text-[5.5pt] font-semibold text-slate-700 leading-none">
-                                <tr>
-                                    <td colspan="2" class="p-1.5 text-center text-slate-400 font-normal">لا يوجد أفراد مضافين</td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- فوتر كرت مكتبة المصطفى والأصالة -->
-                    <div class="flex justify-between items-center text-[4.5pt] text-emerald-800 font-bold border-t border-emerald-100 pt-0.5 mt-0.5">
-                        <span>تصميم وطباعة: مكتبة المصطفى[span_2](start_span)[span_2](end_span)</span>
-                        <span>مكتبة المصطفى © 2026</span>
+                    <!-- الفوتر -->
+                    <div class="text-center text-[5pt] text-emerald-800 font-bold border-t border-emerald-100 pt-0.5 mt-0.5 tracking-wide">
+                        البطاقة معتمدة رسمياً للتجهيز
                     </div>
-
                 </div>
             </div>
-            
-            <p class="text-xs text-slate-400 text-center max-w-xs no-print">
-                * ملاحظة: تم ضبط أبعاد هذا الكرت ليكون مطابقاً لقياس الهوية المعتمدة (8.5 × 5.5 سم) في الطابعة مباشرة وبدقة ممتازة.
-            </p>
+            <p class="text-xs text-slate-400 text-center px-4 no-print">* المربع أعلاه يمثل حجم الكرت الفعلي (8.5 × 5.5 سم) وسيتم طباعته فقط عند النقر على زر الطباعة.</p>
         </div>
-
     </div>
 
-    <!-- ================= الـ JavaScript المحدث والمحمي بالكامل ================= -->
+    <!-- أكواد الجافاسكريبت الكاملة -->
     <script>
-        // تحميل الإعدادات من الـ LocalStorage فور فتح الصفحة
-        window.onload = function() {
-            document.getElementById('gemini_key').value = localStorage.getItem('gemini_key') || '';
-            document.getElementById('tg_token').value = localStorage.getItem('tg_token') || '';
-            document.getElementById('tg_id').value = localStorage.getItem('tg_id') || '';
-            
-            addMemberRow('', ''); // إضافة صف فارغ لجمالية واجهة المستخدم
-        }
+        // تحميل البيانات المحفوظة
+        window.onload = () => {
+            ['gemini_key', 'tg_token', 'tg_id'].forEach(id => {
+                document.getElementById(id).value = localStorage.getItem(id) || '';
+            });
+            addMemberRow('', '');
+            updateCard();
+        };
 
-        // إظهار وإخفاء كلمات المرور والرموز لحمايتها أثناء العمل
         function toggleKeys() {
-            const ids = ['gemini_key', 'tg_token', 'tg_id'];
-            ids.forEach(id => {
-                const input = document.getElementById(id);
-                input.type = input.type === "password" ? "text" : "password";
+            ['gemini_key', 'tg_token', 'tg_id'].forEach(id => {
+                const el = document.getElementById(id);
+                el.type = el.type === "password" ? "text" : "password";
             });
         }
 
-        // حفظ مفتاح فردي في المتصفح تلقائياً
-        function saveSingleKey(id) {
-            const val = document.getElementById(id).value.trim();
-            localStorage.setItem(id, val);
-            alert("✅ تم حفظ هذا المفتاح بنجاح في جهازك الشخصي!");
+        function saveKey(id) {
+            localStorage.setItem(id, document.getElementById(id).value.trim());
+            alert("✅ تم الحفظ بنجاح!");
         }
 
-        // فحص مفتاح Gemini API وتأكيد جهوزيته عبر v1 المعتمد
         async function testGemini() {
             const key = document.getElementById('gemini_key').value.trim();
-            if (!key) return alert("يرجى إدخال مفتاح Gemini أولاً!");
-            
+            if (!key) return alert("أدخل المفتاح!");
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${key}`);
                 const data = await res.json();
-                if (data.models) {
-                    alert("✅ مفتاح Gemini صحيح وشغال 100%!");
-                } else {
-                    throw new Error(data.error?.message || "خطأ غير معروف");
-                }
-            } catch (e) {
-                alert("❌ فشل التحقق من المفتاح:\n" + e.message);
-            }
+                if (data.models) alert("✅ المفتاح يعمل بنجاح!");
+                else throw new Error(data.error?.message);
+            } catch (e) { alert("❌ خطأ: " + e.message); }
         }
 
-        // فحص توكن بوت التلغرام وتأكيد جهوزيته
         async function testTgToken() {
             const token = document.getElementById('tg_token').value.trim();
-            if (!token) return alert("يرجى إدخال توكن البوت أولاً!");
-            
+            if (!token) return alert("أدخل التوكن!");
             try {
                 const res = await fetch(`https://api.telegram.org/bot${token}/getMe`);
                 const data = await res.json();
-                if (data.ok) {
-                    alert(`✅ التوكن صحيح! اسم البوت الخاص بك هو: @${data.result.username}`);
-                } else {
-                    throw new Error(data.description || "خطأ غير معروف");
-                }
-            } catch (e) {
-                alert("❌ فشل التحقق من التوكن:\n" + e.message);
-            }
+                if (data.ok) alert(`✅ التوكن يعمل! البوت: @${data.result.username}`);
+                else throw new Error(data.description);
+            } catch (e) { alert("❌ خطأ: " + e.message); }
         }
 
-        // فحص معرف التلغرام وإرسال رسالة فحص فوري عبر البوت
         async function testTgId() {
             const token = document.getElementById('tg_token').value.trim();
             const id = document.getElementById('tg_id').value.trim();
-            if (!token || !id) return alert("يرجى تعبئة التوكن والمعرف (Chat ID) أولاً!");
-
+            if (!token || !id) return alert("أدخل التوكن والمعرف!");
             try {
                 const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        chat_id: id,
-                        text: "🔔 فحص الاتصال الفوري: تم ربط نظام مكتبة المصطفى بالبوت بنجاح تام! 🥳[span_3](start_span)"[span_3](end_span)
-                    })
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: id, text: "🔔 تم الفحص بنجاح!" })
                 });
                 const data = await res.json();
-                if (data.ok) {
-                    alert("✅ تم إرسال رسالة فحص فوري لهاتفك بنجاح! تحقق من البوت.");
-                } else {
-                    throw new Error(data.description || "خطأ غير معروف");
-                }
-            } catch (e) {
-                alert("❌ فشل إرسال إشعار الفحص:\n" + e.message);
-            }
+                if (data.ok) alert("✅ تم إرسال رسالة فحص لهاتفك!");
+                else throw new Error(data.description);
+            } catch (e) { alert("❌ خطأ: " + e.message); }
         }
 
-        // التعامل مع اختيار صورة الاستمارة وعرض المعاينة الـ 300px
         function handleImageSelected() {
             const fileInput = document.getElementById('image_input');
-            const previewContainer = document.getElementById('image_preview_container');
-            const previewImg = document.getElementById('uploaded_image_preview');
-
+            const preview = document.getElementById('uploaded_image_preview');
+            const container = document.getElementById('image_preview_container');
             if (fileInput.files && fileInput.files[0]) {
-                const file = fileInput.files[0];
                 const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    previewContainer.classList.remove('hidden');
-                }
-
-                reader.readAsDataURL(file);
+                reader.onload = e => { preview.src = e.target.result; container.classList.remove('hidden'); }
+                reader.readAsDataURL(fileInput.files[0]);
             }
         }
 
@@ -432,195 +291,120 @@
             });
         }
 
-        // القارئ الذكي عبر Gemini API المستقر v1
         async function startOCR() {
             const apiKey = document.getElementById('gemini_key').value.trim();
-            const fileInput = document.getElementById('image_input');
+            const file = document.getElementById('image_input').files[0];
             const btn = document.getElementById('ocr_btn');
-
-            if (!apiKey) return alert('يرجى إدخال مفتاح Gemini API أولاً.');
-            if (!fileInput.files || fileInput.files.length === 0) return alert('يرجى اختيار ملف الصورة أولاً.');
-
+            if (!apiKey || !file) return alert('يرجى وضع مفتاح Gemini واختيار صورة!');
+            
             localStorage.setItem('gemini_key', apiKey);
-            btn.innerText = "جاري المعالجة... ⏳";
-            btn.disabled = true;
+            btn.innerText = "جاري القراءة... ⏳"; btn.disabled = true;
 
             try {
-                const imageObj = await fileToBase64(fileInput.files[0]);
-                const prompt = `
-                قم بقراءة صورة "معلومات البطاقة التموينية" واستخرج البيانات بدقة متناهية.
-                أرجع النتيجة بصيغة JSON فقط بهذا الهيكل تماماً دون أي مقدمات أو نصوص إضافية أو علامات ماركداون:
-                {
-                  "card_number": "رقم البطاقة التموينية المكون من أرقام فقط",
-                  "family_head": "اسم رب الاسرة",
-                  "food_agent_name": "اسم وكيل الغذائية",
-                  "food_agent_id": "رقم وكيل الغذائية",
-                  "flour_agent_name": "اسم وكيل الطحين",
-                  "flour_agent_id": "رقم وكيل الطحين",
-                  "center_name_id": "اسم ورقم المركز مثل الرميثة 733",
-                  "branch": "الفرع",
-                  "governorate": "المحافظة",
-                  "family_members": [
-                    {"name": "الاسم المسجل الأول", "relationship": "الصلة"},
-                    {"name": "الاسم المسجل الثاني", "relationship": "الصلة"}
-                  ]
-                }
-                `;
-
-                // التعديل المعتمد لـ v1
+                const imageObj = await fileToBase64(file);
+                const prompt = `استخرج بيانات البطاقة التموينية بدقة بصيغة JSON فقط: {"card_number":"","family_head":"","food_agent_name":"","food_agent_id":"","flour_agent_name":"","flour_agent_id":"","center_name_id":"","branch":"","governorate":"","family_members":[{"name":"","relationship":""}]}`;
+                
                 const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                const payload = {
-                    contents: [{
-                        parts: [
-                            { text: prompt },
-                            { inlineData: { mimeType: imageObj.mimeType, data: imageObj.data } }
-                        ]
-                    }]
-                };
-
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
+                const res = await fetch(url, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{text: prompt}, {inlineData: imageObj}] }] })
                 });
 
-                const resData = await response.json();
+                const resData = await res.json();
                 if (resData.error) throw new Error(resData.error.message);
-
-                let textResult = resData.candidates[0].content.parts[0].text.trim();
-                if (textResult.startsWith("```json")) textResult = textResult.replace("```json", "");
-                if (textResult.endsWith("```")) textResult = textResult.substring(0, textResult.length - 3);
-                textResult = textResult.trim();
-
-                const parsedData = JSON.parse(textResult);
-                fillFormFields(parsedData);
-
-            } catch (error) {
-                alert("حدث خطأ أثناء معالجة الصورة:\n" + error.message);
-            } finally {
-                btn.innerText = "⚡ قراءة تلقائية بـ Gemini";
-                btn.disabled = false;
-            }
+                
+                let text = resData.candidates[0].content.parts[0].text.trim();
+                text = text.replace(/```json|```/g, '').trim();
+                fillFormFields(JSON.parse(text));
+            } catch (err) { alert("حدث خطأ: " + err.message); }
+            finally { btn.innerText = "⚡ قراءة تلقائية"; btn.disabled = false; }
         }
 
-        // تعبئة الحقول والجدول فور قراءة الصورة
-        function fillFormFields(data) {
-            document.getElementById('input_card_number').value = data.card_number || '';
-            document.getElementById('input_family_head').value = data.family_head || '';
-            document.getElementById('input_food_name').value = data.food_agent_name || '';
-            document.getElementById('input_food_id').value = data.food_agent_id || '';
-            document.getElementById('input_flour_name').value = data.flour_agent_name || '';
-            document.getElementById('input_flour_id').value = data.flour_agent_id || '';
-            document.getElementById('input_governorate').value = data.governorate || '';
-            document.getElementById('input_branch').value = data.branch || '';
-            document.getElementById('input_center').value = data.center_name_id || '';
-
-            const container = document.getElementById('members_inputs_container');
-            container.innerHTML = '';
-
-            if (data.family_members && data.family_members.length > 0) {
-                data.family_members.forEach(m => addMemberRow(m.name, m.relationship));
-            } else {
-                addMemberRow('', '');
-            }
+        function fillFormFields(d) {
+            document.getElementById('input_card_number').value = d.card_number || '';
+            document.getElementById('input_family_head').value = d.family_head || '';
+            document.getElementById('input_food_name').value = d.food_agent_name || '';
+            document.getElementById('input_food_id').value = d.food_agent_id || '';
+            document.getElementById('input_flour_name').value = d.flour_agent_name || '';
+            document.getElementById('input_flour_id').value = d.flour_agent_id || '';
+            document.getElementById('input_governorate').value = d.governorate || '';
+            document.getElementById('input_branch').value = d.branch || '';
+            document.getElementById('input_center').value = d.center_name_id || '';
+            
+            const cont = document.getElementById('members_inputs_container');
+            cont.innerHTML = '';
+            if (d.family_members && d.family_members.length) d.family_members.forEach(m => addMemberRow(m.name, m.relationship));
+            else addMemberRow('', '');
             updateCard();
         }
 
-        // إضافة فرد عائلة جديد ديناميكياً
-        function addMemberRow(name = '', relation = '') {
-            const container = document.getElementById('members_inputs_container');
-            const rowId = 'member_row_' + Date.now() + Math.random().toString(36).substr(2, 4);
-
+        function addMemberRow(name, rel) {
+            const id = 'row_' + Math.random().toString(36).substring(7);
             const div = document.createElement('div');
-            div.id = rowId;
-            div.className = "flex gap-2 items-center member-input-row";
+            div.id = id; div.className = "flex gap-2 member-input-row";
             div.innerHTML = `
-                <input type="text" value="${name}" placeholder="الاسم الكامل للفرد" oninput="updateCard()" class="flex-1 p-1.5 border rounded text-xs text-right input-member-name">
-                <input type="text" value="${relation}" placeholder="الصلة" oninput="updateCard()" class="w-1/3 p-1.5 border rounded text-xs text-right input-member-relation">
-                <button onclick="removeMemberRow('${rowId}')" class="text-red-500 hover:text-red-700 text-sm font-bold px-1">❌</button>
+                <input type="text" value="${name}" placeholder="الاسم" oninput="updateCard()" class="flex-1 p-1.5 border rounded text-xs input-member-name">
+                <input type="text" value="${rel}" placeholder="الصلة" oninput="updateCard()" class="w-1/3 p-1.5 border rounded text-xs input-member-relation text-center">
+                <button onclick="document.getElementById('${id}').remove(); updateCard();" class="text-red-500 font-bold px-1">❌</button>
             `;
-            container.appendChild(div);
+            document.getElementById('members_inputs_container').appendChild(div);
             updateCard();
         }
 
-        function removeMemberRow(id) {
-            const row = document.getElementById(id);
-            if (row) {
-                row.remove();
-                updateCard();
-            }
-        }
-
-        // تحديث كرت المعاينة فورياً عند أي مدخل
         function updateCard() {
             document.getElementById('card_number_val').innerText = document.getElementById('input_card_number').value || '---';
             document.getElementById('family_head_val').innerText = document.getElementById('input_family_head').value || '---';
             
-            const flourName = document.getElementById('input_flour_name').value;
+            const flour = document.getElementById('input_flour_name').value;
             const flourId = document.getElementById('input_flour_id').value;
-            document.getElementById('flour_agent_val').innerText = flourName ? `${flourName} (${flourId || '0'})` : '---';
+            document.getElementById('flour_agent_val').innerText = flour ? `${flour} (${flourId})` : '---';
 
-            const foodName = document.getElementById('input_food_name').value;
+            const food = document.getElementById('input_food_name').value;
             const foodId = document.getElementById('input_food_id').value;
-            document.getElementById('food_agent_val').innerText = foodName ? `${foodName} (${foodId || '0'})` : '---';
+            document.getElementById('food_agent_val').innerText = food ? `${food} (${foodId})` : '---';
 
             document.getElementById('center_val').innerText = document.getElementById('input_center').value || '---';
             document.getElementById('branch_val').innerText = document.getElementById('input_branch').value || '---';
             document.getElementById('governorate_val').innerText = document.getElementById('input_governorate').value || '---';
 
-            const tableBody = document.getElementById('family_table_body');
-            tableBody.innerHTML = '';
-
+            const tbody = document.getElementById('family_table_body');
+            tbody.innerHTML = '';
             const rows = document.querySelectorAll('.member-input-row');
-            let hasMembers = false;
-            let counter = 0;
-
-            rows.forEach(row => {
-                const name = row.querySelector('.input-member-name').value.trim();
-                const relation = row.querySelector('.input-member-relation').value.trim();
+            let has = false;
+            rows.forEach((r, i) => {
+                const name = r.querySelector('.input-member-name').value.trim();
+                const rel = r.querySelector('.input-member-relation').value.trim();
                 if (name) {
-                    hasMembers = true;
-                    counter++;
-                    const bgClass = counter % 2 === 0 ? "bg-slate-50" : "bg-white";
-                    tableBody.innerHTML += `
-                        <tr class="${bgClass} border-b-[0.1mm] border-slate-100">
-                            <td class="p-0.5 pr-1">${name}</td>
-                            <td class="p-0.5 text-slate-500">${relation || '---'}</td>
-                        </tr>
-                    `;
+                    has = true;
+                    tbody.innerHTML += `<tr class="${i%2===0?'bg-slate-50':''} border-b-[0.1mm] border-slate-100"><td class="p-0.5 px-1">${name}</td><td class="p-0.5 text-center text-slate-500">${rel}</td></tr>`;
                 }
             });
-
-            if (!hasMembers) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="2" class="p-2 text-center text-slate-400 font-normal">لا يوجد أفراد مضافين حالياً</td>
-                    </tr>
-                `;
-            }
+            if (!has) tbody.innerHTML = `<tr><td colspan="2" class="text-center p-2 text-slate-400">لا يوجد أفراد</td></tr>`;
         }
 
-        function triggerPreview() {
-            alert("تم تفعيل مقاييس الكرت الذهبية 8.5 × 5.5 سم بنجاح للمعاينة!");
+        function triggerPrint() { window.print(); }
+        function triggerRestore() { document.getElementById('restore_file_input').click(); }
+
+        function handleRestore(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                try { fillFormFields(JSON.parse(ev.target.result)); alert("✅ تم استعادة البيانات!"); }
+                catch { alert("❌ خطأ: ملف غير صالح."); }
+            };
+            reader.readAsText(file);
         }
 
-        function triggerPrint() {
-            window.print();
-        }
+        async function sendToTelegram() {
+            const token = document.getElementById('tg_token').value.trim();
+            const chatId = document.getElementById('tg_id').value.trim();
+            const btn = document.getElementById('tg_btn');
+            if (!token || !chatId) return alert("يرجى ملء بيانات البوت والقناة أولاً.");
 
-        // تجميع وتجهيز حقول الكرت بصيغة JSON للنسخ الاحتياطي
-        function collectCurrentData() {
-            const family_members = [];
-            const rows = document.querySelectorAll('.member-input-row');
-            rows.forEach(row => {
-                const name = row.querySelector('.input-member-name').value.trim();
-                const relationship = row.querySelector('.input-member-relation').value.trim();
-                if (name) {
-                    family_members.push({ name, relationship });
-                }
-            });
-
-            return {
+            btn.innerText = "جاري الإرسال... ⏳"; btn.disabled = true;
+            
+            const data = {
                 card_number: document.getElementById('input_card_number').value,
                 family_head: document.getElementById('input_family_head').value,
                 food_agent_name: document.getElementById('input_food_name').value,
@@ -630,108 +414,30 @@
                 governorate: document.getElementById('input_governorate').value,
                 branch: document.getElementById('input_branch').value,
                 center_name_id: document.getElementById('input_center').value,
-                family_members: family_members
+                family_members: Array.from(document.querySelectorAll('.member-input-row')).map(r => ({
+                    name: r.querySelector('.input-member-name').value.trim(),
+                    relationship: r.querySelector('.input-member-relation').value.trim()
+                })).filter(m => m.name)
             };
-        }
 
-        // إرسال البيانات + ملف JSON احتياطي فوري للتلغرام
-        async function sendToTelegram() {
-            const token = document.getElementById('tg_token').value.trim();
-            const chatId = document.getElementById('tg_id').value.trim();
-            const btn = document.getElementById('tg_btn');
-
-            if (!token || !chatId) {
-                alert("يرجى ملء بيانات البوت والقناة أولاً وحفظها.");
-                return;
-            }
-
-            btn.innerText = "جاري الإرسال والرفع... ⏳";
-            btn.disabled = true;
-
-            const cardData = collectCurrentData();
-            const cardNo = cardData.card_number || 'بدون_رقم';
-            const familyHead = cardData.family_head || 'بدون_اسم';
-
-            let membersText = "";
-            cardData.family_members.forEach((m, idx) => {
-                membersText += ` ${idx+1}. ${m.name} - (${m.relationship})\n`;
-            });
-
-            const textMessage = `
-🔔 *بطاقة تموينية جديدة من مكتبة المصطفى* 🔔[span_4](start_span)[span_4](end_span)
-
-*• رقم البطاقة:* \`${cardNo}\`
-*• رب الأسرة:* ${familyHead}
-
-*• وكيل الغذائية:* ${cardData.food_agent_name} (${cardData.food_agent_id})
-*• وكيل الطحين:* ${cardData.flour_agent_name} (${cardData.flour_agent_id})
-
-*• الموقع:* ${cardData.governorate} - ${cardData.branch} - ${cardData.center_name_id}
-
-*👥 العائلة:*
-${membersText || "لا يوجد أفراد مضافين."}
-            `;
-
+            const txt = `🔔 بطاقة جديدة\n• الرقم: ${data.card_number}\n• رب الأسرة: ${data.family_head}`;
             try {
-                // إرسال التقرير النصي
-                const textUrl = `[https://api.telegram.org/bot$](https://api.telegram.org/bot$){token}/sendMessage`;
-                await fetch(textUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ chat_id: chatId, text: textMessage, parse_mode: "Markdown" })
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: chatId, text: txt })
                 });
 
-                // تصدير ملف JSON الاحتياطي وإرساله كوثيقة مستند
-                const jsonString = JSON.stringify(cardData, null, 2);
-                const blob = new Blob([jsonString], { type: "application/json" });
-                const fileName = `${cardNo}_${familyHead}.json`;
-
-                const formData = new FormData();
-                formData.append('chat_id', chatId);
-                formData.append('document', blob, fileName);
-                formData.append('caption', `📂 ملف الاستعادة والنسخة الاحتياطية للبطاقة التموينية رقم ${cardNo}`);
-
-                const docUrl = `[https://api.telegram.org/bot$](https://api.telegram.org/bot$){token}/sendDocument`;
-                const resDoc = await fetch(docUrl, { method: "POST", body: formData });
-                const docData = await resDoc.json();
-
-                if (docData.ok) {
-                    alert("✅ تم إرسال التقرير ورفع ملف النسخة الاحتياطية للتلغرام بنجاح رائع!");
-                } else {
-                    alert("فشل إرسال ملف الاحتياطي: " + docData.description);
-                }
-
-            } catch (err) {
-                alert("خطأ اتصال أثناء الإرسال للتلغرام: " + err.message);
-            } finally {
-                btn.innerText = "✈️ إرسال للتلغرام + احتياطي";
-                btn.disabled = false;
-            }
-        }
-
-        // تشغيل نافذة اختيار ملف الاستعادة
-        function triggerRestore() {
-            document.getElementById('restore_file_input').click();
-        }
-
-        // قراءة ومعالجة ملف الاستعادة المستورد (.json)
-        function handleRestore(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    fillFormFields(importedData);
-                    alert("✅ تم استيراد واستعادة كافة البيانات والأسماء من ملف النسخة الاحتياطية بنجاح رائع وبدون مشاكل!");
-                } catch(err) {
-                    alert("❌ خطأ: هذا الملف تالف أو غير متوافق مع نظام النسخ الاحتياطي الخاص بك.");
-                }
-            };
-            reader.readAsText(file);
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const fd = new FormData();
+                fd.append('chat_id', chatId);
+                fd.append('document', blob, `${data.card_number || 'card'}.json`);
+                fd.append('caption', `نسخة احتياطية للرقم ${data.card_number}`);
+                
+                const res = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, { method: "POST", body: fd });
+                if ((await res.json()).ok) alert("✅ تم الإرسال للتلغرام بنجاح!");
+            } catch (err) { alert("خطأ الإرسال: " + err.message); }
+            finally { btn.innerText = "✈️ إرسال للتلغرام + نسخة احتياطية"; btn.disabled = false; }
         }
     </script>
 </body>
 </html>
-
