@@ -1,0 +1,15 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Dynamic app outputs
+ration_card_output.html
+
+# Generated placeholder logos
+logo1.png
+logo2.png
+
