@@ -3,450 +3,1352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة وإنشاء البطاقات</title>
+    <title>نظام إدارة البطاقة التموينية الإلكتروني - مكتبة المصطفى</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
+            --primary-color: #0b7c45;
+            --primary-hover: #096337;
+            --secondary-color: #d8a126;
+            --danger-color: #d32f2f;
+            --danger-hover: #b71c1c;
+            --info-color: #1565c0;
+            --info-hover: #0d47a1;
+            --bg-light: #f4f6f9;
+            --card-light: #ffffff;
+            --text-light: #2c3e50;
+            --border-light: #e0ede6;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Cairo', Tahoma, sans-serif;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            padding: 20px;
+            background: var(--bg-light);
+            color: var(--text-light);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            transition: all 0.3s ease;
             min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 950px;
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border);
+        /* شريط التحكم الجانبي - Sidebar */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 25px 20px;
+            overflow-y: auto;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+            z-index: 100;
         }
 
-        h2 {
+        .sidebar h2 {
             text-align: center;
-            margin-bottom: 25px;
-            color: #fff;
-            font-size: 1.8rem;
-            border-bottom: 2px solid var(--border);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--secondary-color);
             padding-bottom: 15px;
-        }
-
-        .layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* قسم التحكم والبيانات */
-        .form-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .input-group label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .input-group input, .input-group textarea {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #0f172a;
             color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: border 0.3s;
         }
 
-        .input-group input:focus, .input-group textarea:focus {
-            border-color: var(--primary);
-        }
-
-        .bot-settings {
-            background: #111827;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px dashed var(--border);
-            margin-top: 10px;
-        }
-
-        .bot-settings-title {
-            font-size: 0.95rem;
-            color: #38bdf8;
-            margin-bottom: 10px;
-            font-weight: bold;
+        .sidebar-menu {
             display: flex;
-            align-items: center;
-            gap: 5px;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        /* الأزرار */
-        .btn {
-            padding: 12px;
+        .sidebar button {
+            width: 100%;
+            padding: 12px 15px;
             border: none;
             border-radius: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: right;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
-            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar button:hover {
+            background: #fff;
+            color: var(--primary-color);
+            transform: translateX(-5px);
+        }
+
+        /* مساحة العمل الرئيسية */
+        .main-content {
+            margin-right: 280px;
+            padding: 30px;
+            width: calc(100% - 280px);
+            transition: all 0.3s ease;
+        }
+
+        header.dashboard-header {
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header.dashboard-header h1 {
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 28px;
+        }
+
+        header.dashboard-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* الإحصائيات */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-light);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-top: 10px;
+            font-weight: 800;
+        }
+
+        /* الاستمارات والحقول */
+        .panel {
+            background: var(--card-light);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-right: 4px solid var(--secondary-color);
+            padding-right: 10px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .input-card {
+            background: #f9fbf9;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-card label {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+
+        .input-card input {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .input-card input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* جدول أفراد العائلة (شاشة الإدخال) */
+        .family-table-container {
+            max-height: 380px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .family-input-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .family-input-table th {
+            background: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            padding: 12px;
+            font-weight: 700;
+            z-index: 5;
+        }
+
+        .family-input-table td {
+            border-bottom: 1px solid #eee;
+            padding: 8px;
+        }
+
+        .family-input-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* لوحة الأزرار التفاعلية */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
+        .btn-green { background: var(--primary-color); color: white; }
+        .btn-green:hover { background: var(--primary-hover); }
+        .btn-red { background: var(--danger-color); color: white; }
+        .btn-red:hover { background: var(--danger-hover); }
+        .btn-blue { background: var(--info-color); color: white; }
+        .btn-blue:hover { background: var(--info-hover); }
+        .btn-gold { background: var(--secondary-color); color: white; }
+        .btn-gold:hover { background: #be8c1b; }
 
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background-color: #475569;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #334155;
-        }
-
-        /* معاينة البطاقة */
-        .preview-section {
+        /* معاينة البطاقة - Preview */
+        .preview-wrapper {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            gap: 20px;
+            margin: 40px 0;
         }
 
-        .card {
-            width: 380px;
-            height: 230px;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            color: white;
+        #preview {
+            width: 850px;
+            height: 550px;
+            background: #ffffff;
+            border-radius: 25px;
+            border: 4px solid var(--primary-color);
             position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        #preview::before {
+            content: "";
+            position: absolute;
+            bottom: -120px;
+            left: -100px;
+            width: 120%;
+            height: 250px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        #preview::after {
+            content: "";
+            position: absolute;
+            bottom: -95px;
+            left: -100px;
+            width: 120%;
+            height: 220px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .preview-content {
+            position: relative;
+            z-index: 10;
+            padding: 25px;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* تأثير اللمعان خلف البطاقة */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .card-header {
+        .preview-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            z-index: 1;
-        }
-
-        .logo-container {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 5px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .card-logo {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .card-body {
-            z-index: 1;
-            margin-top: 10px;
-        }
-
-        .card-number-display {
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-            font-family: monospace;
-            color: #f1f5f9;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
             margin-bottom: 10px;
         }
 
-        .card-footer {
+        .preview-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .preview-title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .preview-title h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .preview-title p {
+            color: #555;
+            font-size: 13px;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        .preview-qrcode {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .preview-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .preview-box {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+
+        .preview-box h4 {
+            font-size: 11px;
+            color: var(--primary-color);
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        .preview-box p {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        /* جدول الأفراد داخل المعاينة */
+        .preview-table-container {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid var(--primary-color);
+            border-radius: 10px;
+            overflow: hidden;
+            flex-grow: 1;
+            max-height: 155px;
+            overflow-y: auto;
+        }
+
+        .preview-family-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .preview-family-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px;
+            font-weight: 700;
+        }
+
+        .preview-family-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 4px 10px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .preview-footer {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            z-index: 1;
+            align-items: center;
+            color: #fff;
+            position: relative;
+            z-index: 20;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 10px;
         }
 
-        .card-holder {
+        /* سجل البطاقات المخزنة */
+        .records-section {
+            background: var(--card-light);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .records-header {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .card-holder .label {
-            font-size: 0.75rem;
-            color: #cbd5e1;
-            text-transform: uppercase;
+        .live-search-wrapper {
+            width: 280px;
         }
 
-        .card-holder .name {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #ffffff;
+        .live-search-wrapper input {
+            width: 100%;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
         }
 
-        .card-details {
-            font-size: 0.8rem;
-            color: #e2e8f0;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px 8px;
-            border-radius: 4px;
+        .records-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .records-table th {
+            background: #f1f5f2;
+            color: var(--primary-color);
+            padding: 12px;
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .records-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .records-table tr:hover {
+            background: #fafafa;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            margin: 2px;
+            transition: 0.2s;
+        }
+
+        .action-btn.edit { background: var(--info-color); color: #fff; }
+        .action-btn.edit:hover { background: var(--info-hover); }
+        .action-btn.delete { background: var(--danger-color); color: #fff; }
+        .action-btn.delete:hover { background: var(--danger-hover); }
+
+        /* دعم الوضع الليلي - Dark Mode */
+        .dark {
+            --bg-light: #121212;
+            --card-light: #1e1e1e;
+            --text-light: #e0e0e0;
+            --border-light: #333333;
+        }
+
+        .dark .sidebar {
+            background: #064023;
+        }
+
+        .dark input {
+            background: #2b2b2b;
+            color: #fff;
+            border-color: #444;
+        }
+
+        .dark .family-input-table th {
+            background: #064023;
+        }
+
+        .dark .records-table th {
+            background: #252525;
+            color: var(--primary-color);
+        }
+
+        .dark .records-table tr:hover {
+            background: #2d2d2d;
+        }
+
+        .dark .input-card {
+            background: #252525;
+        }
+
+        /* أنماط الطباعة المخصصة - Print Media */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .sidebar, .main-content {
+                display: none !important;
+            }
+            #printArea {
+                display: block !important;
+                direction: rtl;
+            }
+            .print-card {
+                width: 8.5cm;
+                height: 5.5cm;
+                border: 1.5px solid #222;
+                border-radius: 10px;
+                overflow: hidden;
+                position: relative;
+                box-shadow: none;
+                background: #fff;
+                margin: 10px auto;
+                page-break-after: always;
+            }
+            .print-header {
+                height: 55px;
+                background: linear-gradient(90deg, #0b7c45, #2e7d32);
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                font-weight: bold;
+                text-align: center;
+            }
+            .print-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
+                padding: 6px;
+            }
+            .print-item {
+                border: 1px solid #aaa;
+                padding: 3px;
+                border-radius: 4px;
+                font-size: 9px;
+                background: #fff;
+            }
+            .print-item b {
+                display: block;
+                color: #0b7c45;
+                margin-bottom: 2px;
+            }
+            .print-family {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 8px;
+                margin-top: 2px;
+            }
+            .print-family th {
+                background: #0b7c45;
+                color: #fff;
+                padding: 3px;
+            }
+            .print-family td {
+                border: 1px solid #aaa;
+                padding: 2px;
+                text-align: center;
+            }
+            .print-footer {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 22px;
+                background: #d4af37;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                font-weight: bold;
+                color: #000;
+            }
+        }
+
+        #printArea {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>💳 نظام إدارة وإنشاء البطاقات الذكي</h2>
-    
-    <div class="layout">
-        <div class="form-section">
-            <div class="input-group">
-                <label for="fullName">الاسم الكامل</label>
-                <input type="text" id="fullName" placeholder="أدخل اسم صاحب البطاقة" oninput="updatePreview()">
-            </div>
+    <div class="sidebar">
+        <h2>البطاقة التموينية</h2>
+        <div class="sidebar-menu">
+            <button onclick="newCard()">🆕 بطاقة جديدة</button>
+            <button onclick="saveData()">💾 حفظ التغييرات</button>
+            <button onclick="toggleDark()">🌙 الوضع الليلي</button>
+            <button onclick="jsonFile.click()">📥 استيراد ملف للتعديل</button>
+            <input type="file" id="jsonFile" hidden accept="application/json">
+        </div>
+    </div>
 
-            <div class="input-group">
-                <label for="cardNumber">رقم البطاقة</label>
-                <input type="text" id="cardNumber" placeholder="مثال: 4520 8596 1234" oninput="updatePreview()">
+    <div class="main-content">
+        <header class="dashboard-header">
+            <div>
+                <h1>نظام إدارة البطاقة التموينية</h1>
+                <p>تطوير مكتبة المصطفى - قضاء الرميثة</p>
             </div>
-
-            <div class="input-group">
-                <label for="cardDetails">ملاحظات / تفاصيل إضافية</label>
-                <textarea id="cardDetails" rows="2" placeholder="أي بيانات أو ملاحظات أخرى للبطاقة" oninput="updatePreview()"></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-gold" onclick="switchLogo()">🔄 تبديل الشعار (GitHub)</button>
+                <button class="btn btn-blue" onclick="bgFile.click()">🖼️ تغيير الخلفية</button>
+                <input type="file" id="bgFile" hidden accept="image/*">
             </div>
+        </header>
 
-            <div class="bot-settings">
-                <div class="bot-settings-title">💬 إعدادات الإرسال وبوت تليجرام</div>
-                <div class="input-group" style="margin-bottom: 10px;">
-                    <label for="botToken">توكن البوت (Bot Token)</label>
-                    <input type="password" id="botToken" placeholder="أدخل توكن البوت هنا" onchange="saveSettings()">
-                </div>
-                <div class="input-group">
-                    <label for="chatId">ايدي الدردشة (Chat ID)</label>
-                    <input type="text" id="chatId" placeholder="أدخل الايدي الخاص بك" onchange="saveSettings()">
-                </div>
+        <div class="stats">
+            <div class="stat-card">
+                إجمالي البطاقات المسجلة
+                <h3 id="countCards">0</h3>
             </div>
-
-            <button class="btn btn-primary" onclick="generateAndSend()">🚀 إنشاء وإرسال البطاقة للبوت</button>
-            
-            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
-                📥 استعادة للتعديل من ملف
-            </button>
-            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleFileImport(event)">
+            <div class="stat-card">
+                إجمالي الأفراد المسجلين
+                <h3 id="countPersons">0</h3>
+            </div>
         </div>
 
-        <div class="preview-section">
-            <h3 style="color: var(--text-muted); font-size: 1rem;">معاينة حية للبطاقة قبل الإرسال</h3>
+        <div class="panel">
+            <div class="panel-title">إعدادات الإرسال وبوت تليجرام</div>
+            <div class="grid-inputs" style="margin-bottom: 30px;">
+                <div class="input-card">
+                    <label>توكن البوت (Telegram Token)</label>
+                    <input id="botToken" placeholder="أدخل توكن البوت الخاص بك">
+                </div>
+                <div class="input-card">
+                    <label>معرف الدردشة (Chat ID)</label>
+                    <input id="chatId" placeholder="أدخل معرف المستلم أو المجموعة">
+                </div>
+            </div>
+
+            <div class="panel-title">البيانات الأساسية للبطاقة</div>
             
-            <div class="card" id="myCard">
-                <div class="card-header">
-                    <div class="logo-container">
-                        <img class="card-logo" src="./logo1.png" alt="الشعار 1" onerror="showDefaultLogo(this)">
-                    </div>
-                    <div class="logo-container">
-                        <img class="card-logo" src="./logo2.png" alt="الشعار 2" onerror="showDefaultLogo(this)">
-                    </div>
+            <div class="grid-inputs">
+                <div class="input-card">
+                    <label>رقم البطاقة التموينية</label>
+                    <input id="cardno" placeholder="أدخل رقم البطاقة">
                 </div>
-                
-                <div class="card-body">
-                    <div class="card-number-display" id="previewNumber">•••• •••• •••• ••••</div>
+                <div class="input-card">
+                    <label>اسم رب الأسرة</label>
+                    <input id="owner" placeholder="الاسم الثلاثي أو الرباعي">
                 </div>
-                
-                <div class="card-footer">
-                    <div class="card-holder">
-                        <span class="label">صاحب البطاقة</span>
-                        <span class="name" id="previewName">الاسم الكامل يظهر هنا</span>
+                <div class="input-card">
+                    <label>اسم ورقم وكيل الغذائية</label>
+                    <input id="food" placeholder="اسم ورقم الوكيل">
+                </div>
+                <div class="input-card">
+                    <label>اسم ورقم وكيل الطحين</label>
+                    <input id="flour" placeholder="اسم ورقم الوكيل">
+                </div>
+                <div class="input-card">
+                    <label>المحافظة</label>
+                    <input id="city" placeholder="المحافظة (مثال: المثنى)">
+                </div>
+                <div class="input-card">
+                    <label>الفرع</label>
+                    <input id="branch" placeholder="فرع التموين">
+                </div>
+                <div class="input-card">
+                    <label>اسم ورقم المركز</label>
+                    <input id="center" placeholder="اسم ورقم مركز التموين">
+                </div>
+            </div>
+
+            <div class="panel-title">بيانات أفراد الأسرة (الحد الأقصى: 20)</div>
+            <div class="family-table-container">
+                <table class="family-input-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%">ت</th>
+                            <th>الاسم الكامل للفرد</th>
+                            <th style="width: 25%">صلة القرابة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-green" onclick="createCard()">⚙️ إنشاء ومعاينة الكارت</button>
+                <button class="btn btn-red" onclick="deleteCard()">🗑️ حذف الكارت الحالي</button>
+                <button class="btn btn-gold" onclick="downloadPNG()">🖼️ تحميل PNG (300 DPI)</button>
+                <button class="btn btn-blue" onclick="downloadPDF()">📄 تحميل PDF</button>
+                <button class="btn btn-green" onclick="printCard()">🖨️ طباعة البطاقة</button>
+            </div>
+        </div>
+
+        <div class="preview-wrapper">
+            <div id="preview">
+                <div class="preview-content">
+                    
+                    <div class="preview-header">
+                        <img id="logoPreview" class="preview-logo" src="https://raw.githubusercontent.com/username/repository/main/logo_primary.png" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/5/53/Coat_of_arms_of_Iraq.svg';">
+                        <div class="preview-title">
+                            <h2>جمهورية العراق - وزارة التجارة</h2>
+                            <p>البطاقة التموينية الإلكترونية الذكية</p>
+                        </div>
+                        <div id="qrcode" class="preview-qrcode"></div>
                     </div>
-                    <div class="card-details" id="previewDetails">التفاصيل</div>
+
+                    <div class="preview-grid">
+                        <div class="preview-box">
+                            <h4>رقم البطاقة التموينية</h4>
+                            <p id="p1">---</p>
+                        </div>
+                        <div class="preview-box" style="grid-column: span 2;">
+                            <h4>اسم رب الأسرة</h4>
+                            <p id="p2">---</p>
+                        </div>
+                    </div>
+
+                    <div class="preview-grid-2">
+                        <div class="preview-box">
+                            <h4>وكيل المواد الغذائية</h4>
+                            <p id="p3">---</p>
+                        </div>
+                        <div class="preview-box">
+                            <h4>وكيل الطحين</h4>
+                            <p id="p4">---</p>
+                        </div>
+                    </div>
+
+                    <div class="preview-grid">
+                        <div class="preview-box">
+                            <h4>المحافظة</h4>
+                            <p id="p5">---</p>
+                        </div>
+                        <div class="preview-box">
+                            <h4>الفرع</h4>
+                            <p id="p6">---</p>
+                        </div>
+                        <div class="preview-box">
+                            <h4>اسم ورقم المركز</h4>
+                            <p id="p7">---</p>
+                        </div>
+                    </div>
+
+                    <div class="preview-table-container">
+                        <table class="preview-family-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%">#</th>
+                                    <th>الاسم</th>
+                                    <th style="width: 30%">الصلة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="plist">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="preview-footer">
+                        <span>جمهورية العراق - بطاقة ذكية معتمدة</span>
+                        <span>مكتبة المصطفى لخدمات الطباعة</span>
+                    </div>
+
                 </div>
+            </div>
+        </div>
+
+        <div class="panel records-section">
+            <div class="records-header">
+                <div class="panel-title" style="margin-bottom:0;">سجل البطاقات التموينية المسجلة محلياً</div>
+                <div class="live-search-wrapper">
+                    <input id="liveSearch" placeholder="🔍 بحث فوري في السجلات..." onkeyup="filterCards()">
+                </div>
+            </div>
+
+            <div class="records-table-wrapper">
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>رقم البطاقة</th>
+                            <th>رب الأسرة</th>
+                            <th>المحافظة</th>
+                            <th>الإجراءات والعمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cardsTable">
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // عند تحميل الصفحة، استعد قيم التوكن والايدي المحفوظة سابقاً
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedToken = localStorage.getItem('botToken');
-        const savedChatId = localStorage.getItem('chatId');
-        if (savedToken) document.getElementById('botToken').value = savedToken;
-        if (savedChatId) document.getElementById('chatId').value = savedChatId;
-        updatePreview();
-    });
+    <div id="printArea"></div>
 
-    // حفظ الإعدادات في متصفح المستخدم تلقائياً عند تعديلها
-    function saveSettings() {
-        const token = document.getElementById('botToken').value.trim();
-        const chatId = document.getElementById('chatId').value.trim();
-        localStorage.setItem('botToken', token);
-        localStorage.setItem('chatId', chatId);
-    }
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    // تحديث معاينة البطاقة حياً أثناء الكتابة
-    function updatePreview() {
-        const name = document.getElementById('fullName').value.trim();
-        const num = document.getElementById('cardNumber').value.trim();
-        const details = document.getElementById('cardDetails').value.trim();
-
-        document.getElementById('previewName').innerText = name || "الاسم الكامل يظهر هنا";
-        document.getElementById('previewNumber').innerText = num || "•••• •••• •••• ••••";
-        document.getElementById('previewDetails').innerText = details || "التفاصيل";
-    }
-
-    // شعار افتراضي أنيق في حال لم يتم رفع logo1 أو logo2 بعد في مستودع GitHub
-    function showDefaultLogo(imgElement) {
-        imgElement.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
-        imgElement.style.opacity = '0.7';
-    }
-
-    // إرسال البيانات كنسخة احتياطية تليجرام
-    async function generateAndSend() {
-        const name = document.getElementById('fullName').value.trim();
-        const num = document.getElementById('cardNumber').value.trim();
-        const details = document.getElementById('cardDetails').value.trim();
-        const token = document.getElementById('botToken').value.trim();
-        const chatId = document.getElementById('chatId').value.trim();
-
-        if (!name || !num) {
-            alert('الرجاء تعبئة حقول "الاسم الكامل" و "رقم البطاقة" أولاً.');
-            return;
+    <script>
+        // توليد جدول إدخال الأفراد لـ 20 شخصاً تلقائياً
+        const membersBody = document.getElementById("members");
+        for(let i = 1; i <= 20; i++) {
+            membersBody.innerHTML += `
+                <tr>
+                    <td style="text-align: center; font-weight: bold; color: var(--primary-color);">${i}</td>
+                    <td><input type="text" id="name${i}" placeholder="اسم الفرد الثلاثي"></td>
+                    <td><input type="text" id="rel${i}" placeholder="صلة القرابة (مثل: زوجة، ابن)"></td>
+                </tr>
+            `;
         }
 
-        if (!token || !chatId) {
-            alert('يرجى ملء بيانات "توكن البوت" و "ايدي الدردشة" للتمكن من إرسال النسخة الاحتياطية.');
-            return;
+        // تهيئة المتغيرات الأساسية
+        const bgFile = document.getElementById("bgFile");
+        const preview = document.getElementById("preview");
+        const qrcodeContainer = document.getElementById("qrcode");
+        const logoPreview = document.getElementById("logoPreview");
+
+        // إعداد متغير الشعار الافتراضي
+        let currentLogoTheme = "primary";
+
+        // استدعاء التشغيل الأولي بعد تحميل الصفحة
+        window.onload = function() {
+            if(localStorage.getItem("theme") === "true") {
+                document.body.classList.add("dark");
+            }
+            
+            // استرجاع الخلفية المحفوظة مسبقاً
+            let savedBg = localStorage.getItem("savedBg");
+            if (savedBg) {
+                preview.style.backgroundImage = "url(" + savedBg + ")";
+                preview.style.backgroundSize = "cover";
+                preview.style.backgroundPosition = "center";
+            }
+
+            // استرجاع بيانات ربط البوت المخزنة
+            document.getElementById("botToken").value = localStorage.getItem("botToken") || "";
+            document.getElementById("chatId").value = localStorage.getItem("chatId") || "";
+
+            refreshTable();
+            updateStats();
         }
 
-        // حفظ التوكن والايدي
-        saveSettings();
+        // حفظ توكن البوت والأيدي تلقائياً عند التغيير
+        document.getElementById("botToken").addEventListener("change", function() {
+            localStorage.setItem("botToken", this.value.trim());
+        });
+        document.getElementById("chatId").addEventListener("change", function() {
+            localStorage.setItem("chatId", this.value.trim());
+        });
 
-        // تجميع كائن البيانات للبطاقة
-        const cardData = {
-            fullName: name,
-            cardNumber: num,
-            cardDetails: details,
-            createdAt: new Date().toLocaleString('ar-EG')
-        };
+        // دالة لتبديل شعارات GitHub بسهولة
+        function switchLogo() {
+            // قم بتعديل اسم المستخدم والمستودع الخاص بك على جيت هاب هنا
+            const githubUsername = "username"; 
+            const githubRepo = "repository";   
 
-        // إرسال النسخة عبر تليجرام كملف JSON لتسهيل استعادتها وتعديلها
-        const fileName = `${num}_${name}.json`;
-        const blob = new Blob([JSON.stringify(cardData, null, 2)], { type: 'application/json' });
-        
-        const formData = new FormData();
-        formData.append('chat_id', chatId);
-        formData.append('document', blob, fileName);
-        formData.append('caption', `💳 تم حفظ نسخة احتياطية للبطاقة:\n👤 الاسم: ${name}\n🔢 الرقم: ${num}\n📅 التاريخ: ${cardData.createdAt}`);
+            const primaryUrl = `https://raw.githubusercontent.com/${githubUsername}/${githubRepo}/main/logo_primary.png`;
+            const secondaryUrl = `https://raw.githubusercontent.com/${githubUsername}/${githubRepo}/main/logo_secondary.png`;
 
-        try {
-            const response = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
-                method: 'POST',
-                body: formData
+            if (currentLogoTheme === "primary") {
+                logoPreview.src = secondaryUrl;
+                currentLogoTheme = "secondary";
+            } else {
+                logoPreview.src = primaryUrl;
+                currentLogoTheme = "primary";
+            }
+        }
+
+        // دالة إنشاء كارت المعاينة والـ QR Code مع الحفظ التلقائي والإرسال للبوت
+        function createCard() {
+            let cardNoValue = document.getElementById("cardno").value.trim();
+            let ownerValue = document.getElementById("owner").value.trim();
+
+            if (!cardNoValue || !ownerValue) {
+                alert("يرجى ملء (رقم البطاقة) و (اسم رب الأسرة) لإنشاء الكارت!");
+                return;
+            }
+
+            preview.style.display = "block";
+
+            document.getElementById("p1").innerText = cardNoValue;
+            document.getElementById("p2").innerText = ownerValue;
+            document.getElementById("p3").innerText = document.getElementById("food").value || "---";
+            document.getElementById("p4").innerText = document.getElementById("flour").value || "---";
+            document.getElementById("p5").innerText = document.getElementById("city").value || "---";
+            document.getElementById("p6").innerText = document.getElementById("branch").value || "---";
+            document.getElementById("p7").innerText = document.getElementById("center").value || "---";
+
+            // ملء جدول الأفراد المعتمدين في الكارت
+            const plist = document.getElementById("plist");
+            plist.innerHTML = "";
+            let n = 1;
+            for(let i = 1; i <= 20; i++) {
+                let name = document.getElementById("name" + i).value;
+                let rel = document.getElementById("rel" + i).value;
+                if(name.trim() !== "") {
+                    plist.innerHTML += `
+                        <tr>
+                            <td>${n++}</td>
+                            <td>${name}</td>
+                            <td>${rel}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // توليد الـ QR Code الخاص ببيانات الكارت
+            qrcodeContainer.innerHTML = "";
+            let qrPayload = `الرقم: ${cardNoValue}\nرب الأسرة: ${ownerValue}\nبوابة الاستعلام السريع - مكتبة المصطفى`;
+            
+            new QRCode(qrcodeContainer, {
+                text: qrPayload,
+                width: 80,
+                height: 80,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
 
-            if (response.ok) {
-                alert(`✨ تم إنشاء البطاقة وإرسال النسخة الاحتياطية بنجاح إلى البوت باسم:\n[ ${fileName} ]`);
-            } else {
-                const errResult = await response.json();
-                alert(`⚠️ فشل إرسال النسخة الاحتياطية: ${errResult.description}`);
+            // إجراء الحفظ التلقائي وإرسال نسخة الملف مباشرة عبر بوت التليجرام
+            let cardDataObj = autoSave();
+            if (cardDataObj) {
+                sendToTelegramBot(cardDataObj);
             }
-        } catch (error) {
-            alert('❌ حدث خطأ في الشبكة أثناء محاولة الاتصال بتليجرام.');
-            console.error(error);
+
+            // تمرير سلس نحو الكارت المعاين
+            preview.scrollIntoView({ behavior: 'smooth' });
         }
-    }
 
-    // معالجة ملف الاسترداد وإعادة ملء الخانات للتعديل
-    function handleFileImport(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+        // إرسال الملف بصيغة JSON مباشرة عبر تيليجرام
+        function sendToTelegramBot(dataObj) {
+            const token = document.getElementById("botToken").value.trim();
+            const chatId = document.getElementById("chatId").value.trim();
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (data.fullName && data.cardNumber) {
-                    document.getElementById('fullName').value = data.fullName;
-                    document.getElementById('cardNumber').value = data.cardNumber;
-                    document.getElementById('cardDetails').value = data.cardDetails || "";
-                    
-                    updatePreview();
-                    alert('✅ تم استيراد بيانات البطاقة بنجاح من الملف وجاهزة للتعديل!');
-                } else {
-                    alert('⚠️ تنسيق الملف المستورد غير صحيح أو لا يحتوي على الحقول الأساسية.');
-                }
-            } catch (err) {
-                alert('❌ فشل قراءة الملف. الرجاء التأكد من رفع ملف بصيغة JSON صحيحة.');
+            if (!token || !chatId) {
+                console.log("تنبيه: لم يتم ضبط إعدادات البوت، تم الحفظ محلياً فقط.");
+                return;
             }
-        };
-        reader.readAsText(file);
-        // تصفير مدخل الملف ليتمكن المستخدم من إعادة استيراده لاحقاً مجدداً
-        event.target.value = '';
-    }
-</script>
 
+            // اسم الملف المطلوب: [رقم البطاقة]_[اسم الشخص].json
+            const fileName = `${dataObj.cardno}_${dataObj.owner}.json`;
+            const jsonBlob = new Blob([JSON.stringify(dataObj, null, 4)], { type: "application/json" });
+
+            const formData = new FormData();
+            formData.append("chat_id", chatId);
+            formData.append("caption", `📥 نسخة احتياطية جديدة:\n👤 رب الأسرة: ${dataObj.owner}\n🔢 رقم البطاقة: ${dataObj.cardno}`);
+            formData.append("document", jsonBlob, fileName);
+
+            fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.ok) {
+                    console.log("تم إرسال الملف والنسخة الاحتياطية للبوت بنجاح!");
+                } else {
+                    alert("خطأ أثناء إرسال الملف للبوت: " + resData.description);
+                }
+            })
+            .catch(err => {
+                console.error("فشل الاتصال بخادم تليجرام:", err);
+            });
+        }
+
+        // تحميل الكارت كصورة عالية الجودة 300 DPI للطباعة
+        function downloadPNG() {
+            const originalDisplay = preview.style.display;
+            preview.style.display = "block";
+
+            html2canvas(preview, {
+                scale: 4, 
+                useCORS: true
+            }).then(canvas => {
+                let a = document.createElement("a");
+                a.download = `بطاقة_تموينية_${document.getElementById("cardno").value || "عراقية"}.png`;
+                a.href = canvas.toDataURL("image/png");
+                a.click();
+                preview.style.display = originalDisplay;
+            }).catch(e => {
+                alert("حدث خطأ أثناء تصدير الصورة، يرجى المحاولة مرة أخرى.");
+                preview.style.display = originalDisplay;
+            });
+        }
+
+        // تحميل الكارت كملف PDF بقياس CR-80 القياسي (55x85 مم)
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const originalDisplay = preview.style.display;
+            preview.style.display = "block";
+
+            try {
+                let canvas = await html2canvas(preview, { scale: 4, useCORS: true });
+                let img = canvas.toDataURL("image/png");
+
+                const pdf = new jsPDF({
+                    orientation: "landscape",
+                    unit: "mm",
+                    format: [55, 85]
+                });
+
+                pdf.addImage(img, "PNG", 0, 0, 85, 55);
+                pdf.save(`بطاقة_${document.getElementById("cardno").value || "عائلية"}.pdf`);
+            } catch(err) {
+                alert("خطأ أثناء استخراج ملف PDF.");
+            } finally {
+                preview.style.display = originalDisplay;
+            }
+        }
+
+        // التعامل مع رفع صورة الخلفية المخصصة
+        bgFile.onchange = function() {
+            let file = this.files[0];
+            if(!file) return;
+            let reader = new FileReader();
+            reader.onload = function() {
+                preview.style.backgroundImage = "url(" + reader.result + ")";
+                preview.style.backgroundSize = "cover";
+                preview.style.backgroundPosition = "center";
+                localStorage.setItem("savedBg", reader.result);
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // تخزين البيانات يدوياً بقاعدة البيانات المتكاملة
+        function saveData() {
+            let cardNoValue = document.getElementById("cardno").value;
+            if(!cardNoValue) {
+                alert("يرجى ملء 'رقم البطاقة التموينية' لحفظ البيانات بشكل سليم!");
+                return;
+            }
+            autoSave();
+            alert("تم حفظ البيانات وتحديث السجل المحلي بنجاح!");
+        }
+
+        // استرجاع وعرض السجلات بالجدول
+        function refreshTable() {
+            let cards = JSON.parse(localStorage.getItem("cards")) || [];
+            const cardsTable = document.getElementById("cardsTable");
+            cardsTable.innerHTML = "";
+
+            cards.forEach((c, i) => {
+                cardsTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700;">${c.cardno}</td>
+                        <td style="text-align:right;">${c.owner}</td>
+                        <td>${c.city || 'غير محدد'}</td>
+                        <td>
+                            <button class="action-btn edit" onclick="editCard(${i})">✏️ تعديل</button>
+                            <button class="action-btn delete" onclick="removeCard(${i})">🗑️ حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // تعديل البيانات من الجدول المباشر
+        function editCard(i) {
+            let cards = JSON.parse(localStorage.getItem("cards")) || [];
+            let c = cards[i];
+            if(!c) return;
+
+            document.getElementById("cardno").value = c.cardno || "";
+            document.getElementById("owner").value = c.owner || "";
+            document.getElementById("food").value = c.food || "";
+            document.getElementById("flour").value = c.flour || "";
+            document.getElementById("city").value = c.city || "";
+            document.getElementById("branch").value = c.branch || "";
+            document.getElementById("center").value = c.center || "";
+
+            for(let x = 1; x <= 20; x++) {
+                document.getElementById("name" + x).value = c["name" + x] || "";
+                document.getElementById("rel" + x).value = c["rel" + x] || "";
+            }
+
+            createCard();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        // الفلترة الفورية للسجلات (Live Search)
+        function filterCards() {
+            let text = document.getElementById("liveSearch").value.toLowerCase();
+            document.querySelectorAll("#cardsTable tr").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(text) ? "" : "none";
+            });
+        }
+
+        // حذف البطاقة عبر فهرسها من الجدول
+        function removeCard(i) {
+            if(!confirm("هل تود حذف هذه البطاقة نهائياً من قاعدة البيانات؟")) return;
+            let cards = JSON.parse(localStorage.getItem("cards")) || [];
+            cards.splice(i, 1);
+            localStorage.setItem("cards", JSON.stringify(cards));
+            refreshTable();
+            updateStats();
+        }
+
+        // حذف البطاقة المعروضة حالياً بالاستمارة
+        function deleteCard() {
+            let num = document.getElementById("cardno").value;
+            if(!num) {
+                alert("يرجى تعيين بطاقة أولاً لحذفها!");
+                return;
+            }
+            if(!confirm("هل ترغب في حذف البطاقة الحالية؟")) return;
+
+            let cards = JSON.parse(localStorage.getItem("cards")) || [];
+            cards = cards.filter(x => x.cardno != num);
+            localStorage.setItem("cards", JSON.stringify(cards));
+            alert("تم حذف البطاقة بنجاح.");
+            newCard();
+            refreshTable();
+            updateStats();
+        }
+
+        // تفريغ كافة الحقول لإنشاء بطاقة جديدة تماماً
+        function newCard() {
+            document.querySelectorAll(".panel input").forEach(x => {
+                if(x.type !== "file" && x.id !== "botToken" && x.id !== "chatId") x.value = "";
+            });
+            document.getElementById("plist").innerHTML = "";
+            preview.style.display = "none";
+        }
+
+        // تفعيل وحساب الإحصائيات الفورية بلوحة التحكم
+        function updateStats() {
+            let cards = JSON.parse(localStorage.getItem("cards")) || [];
+            document.getElementById("countCards").innerText = cards.length;
+
+            let totalPersons = 0;
+            cards.forEach(c => {
+                for(let i = 1; i <= 20; i++) {
+                    if(c["name" + i] && c["name" + i].trim() !== "") {
+                        totalPersons++;
+                    }
+                }
+            });
+            document.getElementById("countPersons").innerText = totalPersons;
+        }
+
+        // تفعيل وحفظ المظهر الليلي
+        function toggleDark() {
+            document.body.classList.toggle("dark");
+            localStorage.setItem("theme", document.body.classList.contains("dark"));
+        }
+
+        // استيراد ملف JSON (سواء كان ملفاً مفرداً لبطاقة بغرض تعديلها، أو نسخة مجمعة)
+        const jsonFile = document.getElementById("jsonFile");
+        jsonFile.onchange = function() {
+            let reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    let parsed = JSON.parse(reader.result);
+                    
+                    // إذا كان ملفاً مفرداً لبطاقة واحدة (يحتوي على رقم البطاقة)
+                    if (parsed && parsed.cardno) {
+                        document.getElementById("cardno").value = parsed.cardno || "";
+                        document.getElementById("owner").value = parsed.owner || "";
+                        document.getElementById("food").value = parsed.food || "";
+                        document.getElementById("flour").value = parsed.flour || "";
+                        document.getElementById("city").value = parsed.city || "";
+                        document.getElementById("branch").value = parsed.branch || "";
+                        document.getElementById("center").value = parsed.center || "";
+
+                        for(let i = 1; i <= 20; i++) {
+                            document.getElementById("name" + i).value = parsed["name" + i] || "";
+                            document.getElementById("rel" + i).value = parsed["rel" + i] || "";
+                        }
+                        createCard();
+                        alert("تم استيراد بيانات البطاقة بنجاح! يمكنك تعديلها الآن.");
+                    } 
+                    // إذا كان الملف عبارة عن مصفوفة (سجل قواعد البيانات الكامل)
+                    else if (Array.isArray(parsed)) {
+                        localStorage.setItem("cards", reader.result);
+                        refreshTable();
+                        updateStats();
+                        alert("تم استيراد سجل قواعد البيانات بالكامل بنجاح!");
+                    } else {
+                        alert("صيغة الملف المستورد غير صالحة.");
+                    }
+                } catch(e) {
+                    alert("فشل أثناء قراءة الملف المستورد.");
+                }
+            };
+            reader.readAsText(this.files[0]);
+        }
+
+        // بناء كارت مخصص ذو أبعاد حقيقية مصغرة لغرض الطباعة
+        function buildPrintCard() {
+            let html = `
+                <div class="print-card">
+                    <div class="print-header">
+                        جمهورية العراق - وزارة التجارة<br>البطاقة التموينية الإلكترونية الذكية
+                    </div>
+                    <div class="print-info">
+                        <div class="print-item"><b>رقم البطاقة:</b> ${document.getElementById("cardno").value || '---'}</div>
+                        <div class="print-item"><b>رب الأسرة:</b> ${document.getElementById("owner").value || '---'}</div>
+                        <div class="print-item"><b>وكيل الغذائية:</b> ${document.getElementById("food").value || '---'}</div>
+                        <div class="print-item"><b>وكيل الطحين:</b> ${document.getElementById("flour").value || '---'}</div>
+                        <div class="print-item"><b>المحافظة:</b> ${document.getElementById("city").value || '---'}</div>
+                        <div class="print-item"><b>الفرع / المركز:</b> ${document.getElementById("branch").value || '---'} / ${document.getElementById("center").value || '---'}</div>
+                    </div>
+                    <table class="print-family">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%">#</th>
+                                <th>الاسم</th>
+                                <th style="width: 30%">الصلة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            let n = 1;
+            for(let i = 1; i <= 20; i++) {
+                let name = document.getElementById("name" + i).value;
+                let rel = document.getElementById("rel" + i).value;
+                if(name.trim() !== "") {
+                    html += `
+                        <tr>
+                            <td>${n++}</td>
+                            <td>${name}</td>
+                            <td>${rel}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            html += `
+                        </tbody>
+                    </table>
+                    <div class="print-footer">
+                        مكتبة المصطفى - قضاء الرميثة
+                    </div>
+                </div>
+            `;
+            document.getElementById("printArea").innerHTML = html;
+        }
+
+        function printCard() {
+            buildPrintCard();
+            window.print();
+        }
+
+        // الحفظ التلقائي الهادئ أثناء العمل ويرجع الكائن المحفوظ لإرساله للبوت
+        function autoSave() {
+            let cardNoVal = document.getElementById("cardno").value.trim();
+            if(!cardNoVal) return null;
+
+            let obj = {
+                cardno: cardNoVal,
+                owner: document.getElementById("owner").value.trim(),
+                food: document.getElementById("food").value,
+                flour: document.getElementById("flour").value,
+                city: document.getElementById("city").value,
+                branch: document.getElementById("branch").value,
+                center: document.getElementById("center").value
+            };
+
+            for(let i = 1; i <= 20; i++) {
+                obj["name" + i] = document.getElementById("name" + i).value;
+                obj["rel" + i] = document.getElementById("rel" + i).value;
+            }
+
+            let cards = JSON.parse(localStorage.getItem("cards")) || [];
+            let index = cards.findIndex(x => x.cardno == obj.cardno);
+
+            if(index == -1) {
+                cards.push(obj);
+            } else {
+                cards[index] = obj;
+            }
+            localStorage.setItem("cards", JSON.stringify(cards));
+            refreshTable();
+            updateStats();
+            return obj;
+        }
+
+        // تعيين أحداث الحفظ التلقائي على حقول الإدخال عند فقدان التركيز أو التغيير
+        document.querySelectorAll(".panel input").forEach(x => {
+            x.addEventListener("change", autoSave);
+        });
+
+        // تشغيل نسخ احتياطي آمن تلقائياً في الخلفية كل 30 ثانية للطوارئ
+        setInterval(function() {
+            let cards = localStorage.getItem("cards");
+            if (cards) {
+                localStorage.setItem("lastBackup", cards);
+            }
+        }, 30000);
+    </script>
 </body>
 </html>
