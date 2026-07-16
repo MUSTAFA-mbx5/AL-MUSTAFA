@@ -32,6 +32,14 @@
     .sidebar button { width:100%; padding:12px 15px; border:none; border-radius:8px; background:rgba(255,255,255,.12); color:#fff; font-size:15px; font-weight:600; text-align:right; cursor:pointer; transition:.2s; display:flex; align-items:center; gap:10px; }
     .sidebar button:hover { background:#fff; color:var(--primary-color); transform:translateX(-5px); }
     .sidebar-icon { font-size:17px; width:20px; text-align:center; }
+    .sidebar-panel { margin-top:22px; padding:18px 14px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); border-radius:14px; }
+    .sidebar-panel h3 { margin-bottom:12px; font-size:15px; font-weight:800; color:#fff; }
+    .sidebar-control { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+    .sidebar-control label { font-size:13px; color:#f0f0f0; font-weight:700; }
+    .sidebar-control input[type="text"], .sidebar-control input[type="number"], .sidebar-control input[type="range"] { width:100%; }
+    .sidebar-control input[type="text"], .sidebar-control input[type="number"] { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.12); color:#fff; }
+    .sidebar-control input[type="range"] { accent-color:#fff; }
+    .sidebar-control span { font-size:12px; color:#d8e6e2; }
 
     /* ===== Main ===== */
     .main-content { margin-right:280px; padding:30px; width:calc(100% - 280px); }
@@ -91,48 +99,48 @@
     .preview-wrapper { display:flex; justify-content:center; margin:30px 0; }
     .card-scaler { width:100%; max-width:850px; overflow:hidden; position:relative; margin:0 auto; }
     #cardPreview { width:850px; transform-origin: 0 0; }
-    .card-frame { position:relative; width:100%; min-height:530px; border-radius:22px; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,.15); background:#fff; display:none; }
+    .card-frame { position:relative; width:100%; min-height:530px; border-radius:22px; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,.15); background:#fff; display:none; --info-scale:1; --qr-size:52px; }
     .card-frame.active { display:block; }
     .card-frame.tpl-a, .card-frame.tpl-b { aspect-ratio: 1.586 / 1; min-height:0; }
 
     /* --- Template A: green/gold badge style --- */
-    .tpl-a { border:4px solid var(--primary-color); padding:18px 22px; height:100%; }
+    .tpl-a { border:4px solid var(--primary-color); padding:18px 22px; height:100%; position:relative; }
     .tpl-a::before { content:""; position:absolute; bottom:-120px; left:-100px; width:120%; height:250px; background:var(--primary-color); border-radius:50%; z-index:1; }
     .tpl-a::after { content:""; position:absolute; bottom:-95px; left:-100px; width:120%; height:220px; background:var(--secondary-color); border-radius:50%; z-index:2; }
     .tpl-a .inner { position:relative; z-index:10; display:flex; flex-direction:column; height:100%; justify-content:space-between; gap:8px; }
-    .tpl-a .hdr { display:flex; align-items:center; justify-content:space-between; }
+    .tpl-a .hdr { display:flex; align-items:center; justify-content:space-between; position:relative; }
     .tpl-a .logo { width:52px; height:52px; border-radius:50%; background:linear-gradient(145deg,var(--primary-color),#0f9c58); display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; flex-shrink:0; }
     .tpl-a .title { text-align:center; flex:1; min-width:0; padding:0 10px; }
-    .tpl-a .title h2 { color:var(--primary-color); font-size:19px; font-weight:800; }
-    .tpl-a .title p { color:#555; font-size:11px; font-weight:600; }
-    .tpl-a .qr-box { width:52px; height:52px; background:#fff; border:1px solid #ddd; border-radius:8px; padding:2px; flex-shrink:0; }
+    .tpl-a .title h2 { color:var(--primary-color); font-size:calc(19px * var(--info-scale)); font-weight:800; }
+    .tpl-a .title p { color:#555; font-size:calc(11px * var(--info-scale)); font-weight:600; }
+    .tpl-a .qr-box { position:absolute; top:var(--qr-top,16px); left:var(--qr-left,auto); right:auto; width:var(--qr-size,52px); height:var(--qr-size,52px); background:#fff; border:1px solid #ddd; border-radius:8px; padding:2px; }
     .tpl-a .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
     .tpl-a .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
     .tpl-a .box { background:rgba(255,255,255,.92); border:1.5px solid var(--primary-color); border-radius:9px; padding:6px 10px; min-width:0; }
     .tpl-a .box h4 { font-size:9.5px; color:var(--primary-color); font-weight:700; margin-bottom:2px; }
-    .tpl-a .box p { font-size:12px; font-weight:700; color:#111; overflow-wrap:break-word; }
+    .tpl-a .box p { font-size:calc(12px * var(--info-scale)); font-weight:700; color:#111; overflow-wrap:break-word; }
     .tpl-a .mtable-wrap { background:rgba(255,255,255,.92); border:1.5px solid var(--primary-color); border-radius:9px; flex-grow:1; overflow:hidden; display:flex; flex-direction:column; }
     .tpl-a table.mtable { width:100%; border-collapse:collapse; }
-    .tpl-a table.mtable th { background:var(--primary-color); color:#fff; padding:4px; font-size:10.5px; }
-    .tpl-a table.mtable td { border-bottom:1px solid #ddd; text-align:center; font-weight:700; overflow-wrap:break-word; }
+    .tpl-a table.mtable th { background:var(--primary-color); color:#fff; padding:4px; font-size:calc(10.5px * var(--info-scale)); }
+    .tpl-a table.mtable td { border-bottom:1px solid #ddd; text-align:center; font-weight:700; overflow-wrap:break-word; font-size:calc(10.5px * var(--info-scale)); }
     .tpl-a .foot { display:flex; justify-content:space-between; color:#fff; position:relative; z-index:20; font-size:10.5px; font-weight:700; }
 
     /* --- Template B: navy/gold modern --- */
     .tpl-b { height:100%; background:#fff; display:flex; flex-direction:column; }
     .tpl-b .band { background:linear-gradient(90deg,#1a2f4b,#233f66); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .tpl-b .band h2 { color:#fff; font-size:18px; font-weight:800; }
-    .tpl-b .band p { color:#cfd8e6; font-size:10.5px; margin-top:2px; }
+    .tpl-b .band h2 { color:#fff; font-size:calc(18px * var(--info-scale)); font-weight:800; }
+    .tpl-b .band p { color:#cfd8e6; font-size:calc(10.5px * var(--info-scale)); margin-top:2px; }
     .tpl-b .emblem { width:46px; height:46px; border-radius:50%; background:var(--secondary-color); display:flex; align-items:center; justify-content:center; font-size:20px; color:#1a2f4b; flex-shrink:0; }
     .tpl-b .body-b { padding:16px 24px 34px; display:flex; flex-direction:column; gap:9px; flex:1; min-height:0; }
     .tpl-b .row-b { display:flex; justify-content:space-between; align-items:center; gap:10px; border-bottom:1.5px dashed #d8dde5; padding-bottom:7px; }
-    .tpl-b .row-b .k { font-size:11.5px; color:#8a94a3; font-weight:700; flex-shrink:0; }
-    .tpl-b .row-b .v { font-size:14px; color:#1a2f4b; font-weight:800; overflow-wrap:break-word; text-align:left; }
+    .tpl-b .row-b .k { font-size:calc(11.5px * var(--info-scale)); color:#8a94a3; font-weight:700; flex-shrink:0; }
+    .tpl-b .row-b .v { font-size:calc(14px * var(--info-scale)); color:#1a2f4b; font-weight:800; overflow-wrap:break-word; text-align:left; }
     .tpl-b .grid-b { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
     .tpl-b .mtable-wrap-b { border:1px solid #e3e7ec; border-radius:9px; overflow:hidden; flex:1; min-height:0; display:flex; flex-direction:column; }
     .tpl-b table.mtable-b { width:100%; border-collapse:collapse; }
     .tpl-b table.mtable-b th { background:#1a2f4b; color:#fff; padding:4px; font-size:11px; }
     .tpl-b table.mtable-b td { border-bottom:1px solid #eee; text-align:center; overflow-wrap:break-word; }
-    .tpl-b .qr-b { position:absolute; left:20px; bottom:16px; width:48px; height:48px; background:#fff; border:1px solid #ddd; border-radius:6px; padding:2px; }
+    .tpl-b .qr-b { position:absolute; left:var(--qr-left,20px); top:var(--qr-top,auto); bottom:auto; width:var(--qr-size,48px); height:var(--qr-size,48px); background:#fff; border:1px solid #ddd; border-radius:6px; padding:2px; }
     .tpl-b .foot-b { position:absolute; bottom:0; right:0; left:0; height:7px; background:var(--secondary-color); }
 
     /* --- Template C: official style — real uploaded background image + draggable overlays --- */
@@ -140,12 +148,12 @@
     .tpl-c .c-bg-img { width:100%; display:block; }
     .tpl-c .c-empty-msg { padding:70px 24px; text-align:center; color:#9aa5a1; font-size:14px; line-height:1.8; }
     .tpl-c .c-overlay {
-        position:absolute; font-weight:800; font-size:20px; color:#111; cursor:grab; user-select:none;
+        position:absolute; font-weight:800; font-size:calc(20px * var(--info-scale)); color:#111; cursor:grab; user-select:none;
         touch-action:none; white-space:nowrap; padding:4px 8px; border-radius:4px;
     }
     .tpl-c .c-overlay:active { cursor:grabbing; }
     .tpl-c .c-overlay.editing { outline:2px dashed var(--info-color); background:rgba(255,255,255,.5); }
-    .tpl-c .c-overlay.qr { background:#fff; border:1px solid #ccc; border-radius:6px; padding:2px; width:56px; height:56px; }
+    .tpl-c .c-overlay.qr { background:#fff; border:1px solid #ccc; border-radius:6px; padding:2px; width:var(--qr-size,56px); height:var(--qr-size,56px); }
     .tpl-c .c-overlay.qr img, .tpl-c .c-overlay.qr canvas, .tpl-c .c-overlay.qr table { width:100% !important; height:100% !important; }
 
     /* ===== Records ===== */
@@ -197,6 +205,35 @@
         <button onclick="newCard()"><span class="sidebar-icon">➕</span> بطاقة جديدة</button>
         <button onclick="scrollToSection('records')"><span class="sidebar-icon">🗂️</span> السجلات</button>
         <button onclick="toggleDark()"><span class="sidebar-icon">🌙</span> الوضع الليلي</button>
+    </div>
+    <div class="sidebar-panel">
+        <h3>إعدادات البطاقة</h3>
+        <div class="sidebar-control">
+            <label>نص الشعار الظاهر</label>
+            <input type="text" id="logoTextInput" placeholder="مثلاً LOCOO1 أو 🌾" oninput="onSettingsChange()">
+        </div>
+        <div class="sidebar-control">
+            <label>عرض الباركود</label>
+            <input type="checkbox" id="showBarcode" checked onchange="onSettingsChange()">
+        </div>
+        <div class="sidebar-control">
+            <label>حجم الباركود <span id="barcodeSizeValue">52</span> px</label>
+            <input type="range" id="barcodeSize" min="30" max="140" value="52" oninput="onBarcodeSizeChange(this.value)">
+        </div>
+        <div class="sidebar-control">
+            <label>تحجيم المعلومات <span id="infoScaleValue">100%</span></label>
+            <input type="range" id="infoScale" min="80" max="160" value="100" oninput="onInfoScaleChange(this.value)">
+        </div>
+        <div class="sidebar-control">
+            <label>موضع الباركود (أفقي)</label>
+            <input type="range" id="barcodeLeft" min="0" max="90" value="4" oninput="onSettingsChange()">
+            <span id="barcodeLeftValue">4%</span>
+        </div>
+        <div class="sidebar-control">
+            <label>موضع الباركود (عمودي)</label>
+            <input type="range" id="barcodeTop" min="0" max="90" value="80" oninput="onSettingsChange()">
+            <span id="barcodeTopValue">80%</span>
+        </div>
     </div>
 </div>
 
@@ -292,7 +329,7 @@
             <div class="card-frame tpl-a" id="frame-a">
                 <div class="inner">
                     <div class="hdr">
-                        <div class="logo">🌾</div>
+                        <div class="logo" id="a_logo">🌾</div>
                         <div class="title"><h2>معلومات البطاقة التموينية</h2><p>وزارة التجارة العراقية</p></div>
                         <div class="qr-box" id="qr-a"></div>
                     </div>
@@ -320,7 +357,7 @@
             <div class="card-frame tpl-b" id="frame-b">
                 <div class="band">
                     <div><h2>البطاقة التموينية</h2><p>جمهورية العراق - وزارة التجارة</p></div>
-                    <div class="emblem">🌾</div>
+                    <div class="emblem" id="b_logo">🌾</div>
                 </div>
                 <div class="body-b">
                     <div class="row-b"><span class="k">رقم البطاقة التموينية</span><span class="v" id="b_card_number">—</span></div>
@@ -345,6 +382,7 @@
                 <div class="c-empty-msg" id="c_empty_msg">📤 لا توجد صورة خلفية بعد.<br>ارفع صورة النموذج الرسمي من لوحة "خلفية النموذج الرسمي" أعلاه.</div>
                 <div class="c-overlay" id="c_overlay_number" style="display:none;left:63%;top:44%;">—</div>
                 <div class="c-overlay" id="c_overlay_head" style="display:none;left:63%;top:62%;">—</div>
+                <div class="c-overlay" id="c_overlay_logo" style="display:none;left:15%;top:12%;">🌾</div>
                 <div class="c-overlay qr" id="c_overlay_qr" style="display:none;left:4%;top:80%;"></div>
             </div>
         </div>
@@ -373,6 +411,14 @@
 let cards = [];
 let editingId = null;
 let currentTpl = 'a';
+let cardSettings = {
+    logoText: '🌾',
+    showBarcode: true,
+    barcodeSize: 52,
+    barcodeLeft: 4,
+    barcodeTop: 80,
+    infoScale: 1
+};
 const tplNames = { a: 'النموذج الأول', b: 'النموذج الثاني', c: 'النموذج الرسمي' };
 
 // ---------- Storage ----------
@@ -432,6 +478,50 @@ function getFormData() {
         branch: val('f_branch'), governorate: val('f_governorate'),
         members: getMembers()
     };
+}
+function getCardSettings() {
+    return {
+        logoText: document.getElementById('logoTextInput').value.trim() || '🌾',
+        showBarcode: document.getElementById('showBarcode').checked,
+        barcodeSize: Number(document.getElementById('barcodeSize').value),
+        barcodeLeft: Number(document.getElementById('barcodeLeft').value),
+        barcodeTop: Number(document.getElementById('barcodeTop').value),
+        infoScale: Number(document.getElementById('infoScale').value) / 100
+    };
+}
+function setControlValues(settings) {
+    document.getElementById('logoTextInput').value = settings.logoText;
+    document.getElementById('showBarcode').checked = settings.showBarcode;
+    document.getElementById('barcodeSize').value = settings.barcodeSize;
+    document.getElementById('barcodeSizeValue').textContent = settings.barcodeSize;
+    document.getElementById('barcodeLeft').value = settings.barcodeLeft;
+    document.getElementById('barcodeTop').value = settings.barcodeTop;
+    document.getElementById('barcodeLeftValue').textContent = settings.barcodeLeft + '%';
+    document.getElementById('barcodeTopValue').textContent = settings.barcodeTop + '%';
+    document.getElementById('infoScale').value = Math.round(settings.infoScale * 100);
+    document.getElementById('infoScaleValue').textContent = Math.round(settings.infoScale * 100) + '%';
+}
+function updateSidebarLabels() {
+    document.getElementById('barcodeLeftValue').textContent = cardSettings.barcodeLeft + '%';
+    document.getElementById('barcodeTopValue').textContent = cardSettings.barcodeTop + '%';
+}
+function onSettingsChange() {
+    cardSettings = getCardSettings();
+    updateSidebarLabels();
+    persistSettings();
+    generateCard();
+}
+function onBarcodeSizeChange(value) {
+    document.getElementById('barcodeSizeValue').textContent = value;
+    cardSettings.barcodeSize = Number(value);
+    persistSettings();
+    generateCard();
+}
+function onInfoScaleChange(value) {
+    document.getElementById('infoScaleValue').textContent = value + '%';
+    cardSettings.infoScale = Number(value) / 100;
+    persistSettings();
+    generateCard();
 }
 function val(id) { return document.getElementById(id).value.trim(); }
 
@@ -493,7 +583,9 @@ function generateCard() {
         setText('a_branch', d.branch || '—');
         setText('a_gov', d.governorate || '—');
         setText('a_date', new Date().toLocaleDateString('ar-IQ'));
+        setText('a_logo', cardSettings.logoText || '🌾');
         document.getElementById('a_members').innerHTML = membersRowsA;
+        applyCardSettings();
         renderQR('qr-a', d.card_number);
     } else if (currentTpl === 'b') {
         setText('b_card_number', d.card_number || '—');
@@ -502,12 +594,16 @@ function generateCard() {
         setText('b_food', foodText);
         setText('b_center', centerText);
         setText('b_gov', `${d.governorate || '—'} / ${d.branch || '—'}`);
+        setText('b_logo', cardSettings.logoText || '🌾');
         document.getElementById('b_members').innerHTML = membersRowsA;
+        applyCardSettings();
         renderQR('qr-b', d.card_number);
     } else if (currentTpl === 'c') {
         setText('c_overlay_number', d.card_number || '—');
         setText('c_overlay_head', d.family_head || '—');
-        renderQR('c_overlay_qr', d.card_number, 56);
+        setText('c_overlay_logo', cardSettings.logoText || '🌾');
+        applyCardSettings();
+        renderQR('c_overlay_qr', d.card_number, cardSettings.barcodeSize);
     }
 
     requestAnimationFrame(fitCardPreview);
@@ -515,13 +611,14 @@ function generateCard() {
 function setText(id, text) { document.getElementById(id).textContent = text; }
 
 function renderQR(containerId, text, size) {
-    // توليد رموز QR معطل بناءً على طلب المستخدم
     const el = document.getElementById(containerId);
     if (!el) return;
-    // أخفي الحاوية إن وُجدت لمنع ظهور أي مكان مخصص للباركود
+    el.style.display = cardSettings.showBarcode ? 'block' : 'none';
     el.innerHTML = '';
-    el.style.display = 'none';
-    return;
+    if (!text || !cardSettings.showBarcode) return;
+    try {
+        new QRCode(el, { text: text, width: size || cardSettings.barcodeSize, height: size || cardSettings.barcodeSize, correctLevel: QRCode.CorrectLevel.M });
+    } catch (e) { console.error('QR error', e); }
 }
 
 // ---------- Scale-to-fit so the card is always fully visible, never clipped ----------
@@ -558,7 +655,7 @@ async function persistOfficialConfig() {
 function applyOfficialConfig() {
     const img = document.getElementById('c_bg_img');
     const emptyMsg = document.getElementById('c_empty_msg');
-    const overlays = ['c_overlay_number','c_overlay_head','c_overlay_qr'];
+    const overlays = ['c_overlay_number','c_overlay_head','c_overlay_logo','c_overlay_qr'];
     if (officialConfig.bg) {
         img.src = officialConfig.bg;
         img.style.display = 'block';
@@ -577,6 +674,22 @@ function applyOfficialConfig() {
     document.getElementById('c_overlay_qr').style.left = p.qr.left + '%';
     document.getElementById('c_overlay_qr').style.top = p.qr.top + '%';
     requestAnimationFrame(fitCardPreview);
+}
+function applyCardSettings() {
+    const frame = document.getElementById('frame-' + currentTpl);
+    if (!frame) return;
+    frame.style.setProperty('--info-scale', cardSettings.infoScale);
+    frame.style.setProperty('--qr-size', `${cardSettings.barcodeSize}px`);
+    frame.style.setProperty('--qr-left', `${cardSettings.barcodeLeft}%`);
+    frame.style.setProperty('--qr-top', `${cardSettings.barcodeTop}%`);
+    if (currentTpl === 'c') {
+        const qr = document.getElementById('c_overlay_qr');
+        qr.style.left = cardSettings.barcodeLeft + '%';
+        qr.style.top = cardSettings.barcodeTop + '%';
+        officialConfig.positions.qr.left = cardSettings.barcodeLeft;
+        officialConfig.positions.qr.top = cardSettings.barcodeTop;
+        persistOfficialConfig();
+    }
 }
 
 document.getElementById('bgFileInput').addEventListener('change', e => {
@@ -647,6 +760,17 @@ function newCard() {
     document.getElementById('membersBody').innerHTML = '';
     selectTemplate('a');
     scrollToSection('builder');
+}
+async function loadSettings() {
+    try {
+        const res = await window.storage.get('ration-card-settings', false);
+        if (res) cardSettings = { ...cardSettings, ...JSON.parse(res.value) };
+    } catch (e) { console.error('settings load', e); }
+    setControlValues(cardSettings);
+}
+async function persistSettings() {
+    try { await window.storage.set('ration-card-settings', JSON.stringify(cardSettings), false); }
+    catch (e) { console.error('settings save', e); }
 }
 
 // ---------- Save / Edit / Delete ----------
@@ -737,6 +861,7 @@ async function saveCardAsImage() {
 addMemberRow('','');
 selectTemplate('a');
 loadCards();
+loadSettings();
 loadOfficialConfig();
 window.addEventListener('load', () => requestAnimationFrame(fitCardPreview));
 </script>
