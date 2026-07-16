@@ -225,6 +225,10 @@
             <input type="range" id="infoScale" min="80" max="160" value="100" oninput="onInfoScaleChange(this.value)">
         </div>
         <div class="sidebar-control">
+            <label>تكبير/تصغير أسماء المسجلين <span id="memberScaleValue">100%</span></label>
+            <input type="range" id="memberScale" min="80" max="180" value="100" oninput="onMemberScaleChange(this.value)">
+        </div>
+        <div class="sidebar-control">
             <label>موضع الباركود (أفقي)</label>
             <input type="range" id="barcodeLeft" min="0" max="90" value="4" oninput="onSettingsChange()">
             <span id="barcodeLeftValue">4%</span>
@@ -349,7 +353,6 @@
                     <div class="mtable-wrap">
                         <table class="mtable"><thead><tr><th>الأفراد المسجلين</th><th>الصلة</th></tr></thead><tbody id="a_members"></tbody></table>
                     </div>
-                    <div class="foot"><span>مكتبة المصطفى</span><span id="a_date">—</span></div>
                 </div>
             </div>
 
@@ -417,7 +420,8 @@ let cardSettings = {
     barcodeSize: 52,
     barcodeLeft: 4,
     barcodeTop: 80,
-    infoScale: 1
+    infoScale: 1,
+    memberScale: 1
 };
 const tplNames = { a: 'النموذج الأول', b: 'النموذج الثاني', c: 'النموذج الرسمي' };
 
@@ -486,7 +490,8 @@ function getCardSettings() {
         barcodeSize: Number(document.getElementById('barcodeSize').value),
         barcodeLeft: Number(document.getElementById('barcodeLeft').value),
         barcodeTop: Number(document.getElementById('barcodeTop').value),
-        infoScale: Number(document.getElementById('infoScale').value) / 100
+        infoScale: Number(document.getElementById('infoScale').value) / 100,
+        memberScale: Number(document.getElementById('memberScale').value) / 100
     };
 }
 function setControlValues(settings) {
@@ -500,6 +505,8 @@ function setControlValues(settings) {
     document.getElementById('barcodeTopValue').textContent = settings.barcodeTop + '%';
     document.getElementById('infoScale').value = Math.round(settings.infoScale * 100);
     document.getElementById('infoScaleValue').textContent = Math.round(settings.infoScale * 100) + '%';
+    document.getElementById('memberScale').value = Math.round(settings.memberScale * 100);
+    document.getElementById('memberScaleValue').textContent = Math.round(settings.memberScale * 100) + '%';
 }
 function updateSidebarLabels() {
     document.getElementById('barcodeLeftValue').textContent = cardSettings.barcodeLeft + '%';
@@ -523,6 +530,12 @@ function onInfoScaleChange(value) {
     persistSettings();
     generateCard();
 }
+function onMemberScaleChange(value) {
+    document.getElementById('memberScaleValue').textContent = value + '%';
+    cardSettings.memberScale = Number(value) / 100;
+    persistSettings();
+    generateCard();
+}
 function val(id) { return document.getElementById(id).value.trim(); }
 
 function fillForm(d) {
@@ -541,17 +554,20 @@ function fillForm(d) {
     selectTemplate(d.template || 'a');
 }
 
+function scaledPixel(px) {
+    return Math.round(px * cardSettings.memberScale * 10) / 10;
+}
 function memberRowStyle(count) {
-    if (count <= 5) return 'font-size:11.5px;padding:4px 10px;';
-    if (count <= 8) return 'font-size:10px;padding:3px 8px;';
-    if (count <= 12) return 'font-size:8.5px;padding:2px 6px;';
-    if (count <= 18) return 'font-size:7px;padding:1px 4px;';
-    return 'font-size:6px;padding:1px 3px;';
+    if (count <= 5) return `font-size:${scaledPixel(11.5)}px;padding:4px 10px;`;
+    if (count <= 8) return `font-size:${scaledPixel(10)}px;padding:3px 8px;`;
+    if (count <= 12) return `font-size:${scaledPixel(8.5)}px;padding:2px 6px;`;
+    if (count <= 18) return `font-size:${scaledPixel(7)}px;padding:1px 4px;`;
+    return `font-size:${scaledPixel(6)}px;padding:1px 3px;`;
 }
 function memberHeadStyle(count) {
-    if (count <= 8) return 'font-size:10.5px;padding:4px;';
-    if (count <= 12) return 'font-size:9px;padding:3px;';
-    return 'font-size:7.5px;padding:2px;';
+    if (count <= 8) return `font-size:${scaledPixel(10.5)}px;padding:4px;`;
+    if (count <= 12) return `font-size:${scaledPixel(9)}px;padding:3px;`;
+    return `font-size:${scaledPixel(7.5)}px;padding:2px;`;
 }
 
 // ---------- Generate / render card ----------
@@ -582,7 +598,6 @@ function generateCard() {
         setText('a_center', centerText);
         setText('a_branch', d.branch || '—');
         setText('a_gov', d.governorate || '—');
-        setText('a_date', new Date().toLocaleDateString('ar-IQ'));
         setText('a_logo', cardSettings.logoText || '🌾');
         document.getElementById('a_members').innerHTML = membersRowsA;
         applyCardSettings();
